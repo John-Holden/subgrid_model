@@ -1,1 +1,1 @@
-# dispersal_model
+# dispersal-model
