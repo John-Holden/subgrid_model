@@ -44,7 +44,7 @@ if mode == "HPC":
     # DEFINE parameters
     alpha = 5  # lattice constant m^2
     params["alpha"] = alpha
-    params["domain_sz"] = [400, 400]  # to convert to (m), multiply by alpha
+    params["domain_sz"] = [250, 250]  # to convert to (m), multiply by alpha
     # save ID : unique to each core used
     if int(job_id) < 10:
         save_id = '00' + str(job_id)
@@ -53,14 +53,13 @@ if mode == "HPC":
     # RUN Full parameter space : R0 | \ell | \rho
     # ---- Iterate indices as  ---> [i: dispersal, j:infectivity, k:tree density]
     repeats = 5  # ensemble size = repeats * # HCP_cores
-    R0_Arr = np.array([2, 5, 10])         # Basic reproduction number
+    R0_Arr = np.array([1, 2, 5])         # Basic reproduction number
     rho_Arr_low = np.arange(0.001, 0.05, 0.001)  # Tree density range
     rho_Arr_med = np.arange(0.051, 0.10, 0.010)
-    rho_Arr_hig = np.linspace(0.10, 0.400, 4)
-    # todo : test new rho_Arr values
-    rho_Arr = np.hstack([rho_Arr_low, rho_Arr_med, rho_Arr_hig])
+    # rho_Arr_hig = np.linspace(0.10, 0.400, 4) # rho_Arr = np.hstack([rho_Arr_low, rho_Arr_med, rho_Arr_hig])
+    rho_Arr = np.hstack([rho_Arr_low, rho_Arr_med])
     # rho_Arr = rho_Arr_low # uncomment for small rho arr
-    eff_sigma_Arr = np.array([100]) / alpha  # Dispersal distance in comp units (not physical)
+    eff_sigma_Arr = np.array([50]) / alpha  # Dispersal distance in comp units (not physical)
     dim_ = np.array([repeats, eff_sigma_Arr.shape[0], R0_Arr.shape[0], rho_Arr.shape[0]])  # parameter space dimension
     # DEFINE data structures to save results
     mortality = np.zeros(shape=dim_)
@@ -83,17 +82,6 @@ if mode == "HPC":
                 params["R0"] = R0
                 for k, rho in enumerate(rho_Arr):  # ITERATE through density values
                     params["rho"] = rho
-                    print("r, i, j, k: ", r, i, j, k)
-                    print('eff disp, R0, rho', eff_disp, R0, rho)
-                    # todo check arc3 saving correctly
-                    mortality[r, i, j, k] = job_id
-                    velocities[r, i, j, k] = job_id
-                    max_distances[r, i, j, k] = job_id
-                    run_times[r, i, j, k] = job_id
-                    percolation_pr[r, i, j, k] = job_id
-                    mortality_ratio[r, i, j, k] = job_id
-                    break
-                    """
                     results = sg_model.main(settings, params)
                     mortality_, velocity_, max_d_, run_time_, percolation_, population_sz, ts_max_d = results
                     mortality[r, i, j, k] = mortality_
@@ -102,8 +90,6 @@ if mode == "HPC":
                     run_times[r, i, j, k] = run_time_
                     percolation_pr[r, i, j, k] = percolation_
                     mortality_ratio[r, i, j, k] = mortality_ / population_sz
-                    """
-
                 # save results as multi-dimensional arrays
                 np.save(output_path + "/run_time/" + save_id, run_times)
                 np.save(output_path + "/mortality/" + save_id, mortality)

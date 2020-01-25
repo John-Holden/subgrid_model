@@ -5,7 +5,6 @@ import matplotlib.pyplot as plt
 
 
 class Plots:
-
     def __init__(self, data_directory, field):
         with open(os.getcwd() + '/' + data_directory + '/_sim-info/sim-parameters.pickle', 'rb') as handle:
             self.params = pickle.load(handle)
@@ -19,7 +18,7 @@ class Plots:
             self.set_plots = {"xlabel": "Percolation Probability"}
         if field == "velocity":
             self.set_plots = {"xlabel": r"Velocity $(km/year)$"}
-        """
+
         self.rho_Arr = np.load(data_directory + '/_sim-info/rho_Arr.npy')
         self.R0_Arr = np.load(data_directory + '/_sim-info/R0_Arr.npy')
         self.disp_Arr = np.load(data_directory + '/_sim-info/disp_Arr.npy') * self.params["alpha"]
@@ -27,6 +26,7 @@ class Plots:
         self.rho_Arr = np.arange(0.001, 0.051, 0.001)
         self.disp_Arr = [100]
         self.R0_Arr = [0.25, 0.50, 1.00]
+        """
         return
 
     def get_ensemble(self, results_name, saveDat, show_individual):
@@ -42,12 +42,13 @@ class Plots:
         hpc_core_repeat = np.load(data_path + '/' + file_list[0]).shape[0]
         for c, file in enumerate(file_list):  # iterate through files
             print('File: {} / {}'.format(c, len(file_list)))
-            data = np.load(data_path + '/' + file)
-            for repeat in data:  # iterate through repeated results get sum for each file
+            hpc_core_result = np.load(data_path + '/' + file)
+            for repeat in hpc_core_result:  # iterate through repeated results get sum for each file
                 ensemble_data = ensemble_data + repeat
             # If True plot all individual data files
+            print(hpc_core_result[0][0])
             if show_individual:
-                for ell in data[0]:
+                for ell in hpc_core_result[0]:
                     i = 0
                     for R0_vs_rho in ell:
                         plt.plot(self.rho_Arr, R0_vs_rho, label=r'$R_0 = $ {}'.format(self.R0_Arr[i]))
@@ -91,10 +92,12 @@ if __name__ == '__main__':
     # Data fields saved
     fields = ['max_distance_km', 'mortality', 'mortality_ratio', 'percolation', 'run_time', 'velocity']
     # data_dir = '24-01-2020-HPC-test-R0-vel-lines'
-    data_dir = '24-01-2020-HPC-low-R0-lines'
+    # data_dir = '24-01-2020-HPC-low-R0-lines'
+    data_dir = '25-01-2020-HPC-debug-delMeWhenDone'
     field_ = fields[5]
     # Plot data
     plots = Plots(data_dir, field_)
     ensemble_Av = plots.get_ensemble(results_name=data_dir, saveDat=[False, '-'], show_individual=False)
+
     plots.plot_field(ensemble_Av, title='Ensemble average: ', saveFig=[False, '-single line'])
     # End
