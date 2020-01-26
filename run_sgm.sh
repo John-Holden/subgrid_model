@@ -24,7 +24,7 @@ date_time=$(date '+%d-%m-%Y %H:%M:%S')
 
 mode="HPC"
 sim_type="-debug"
-sim_name="-3R0-1ell-L250"
+sim_name="-full-rho-range"
 
 python3 mkdir.py $date_time $mode $sim_type $sim_name
 python3 sg_main.py $SGE_TASK_ID $date_time $data_type $mode $sim_type $sim_name
