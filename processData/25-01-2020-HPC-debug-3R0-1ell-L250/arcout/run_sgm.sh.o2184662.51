@@ -1,0 +1,33 @@
+## Running job 2184662.51 on host dc3s2b1b.arc3.leeds.ac.uk
+##
+## Resources granted:
+##
+## h_vmem = 1G
+## h_rt   = 48:00:00
+## disk   = 1G
+
+Running HPC simulation, type -debug
+Start time:  2020-01-25 19:25:36.354822  |  sim :  51
+    ell = 10.0 : 1 / 1
+R0 = 1 : 1 / 3
+R0 = 2 : 2 / 3
+R0 = 5 : 3 / 3
+    ell = 10.0 : 1 / 1
+R0 = 1 : 1 / 3
+R0 = 2 : 2 / 3
+R0 = 5 : 3 / 3
+    ell = 10.0 : 1 / 1
+R0 = 1 : 1 / 3
+R0 = 2 : 2 / 3
+R0 = 5 : 3 / 3
+    ell = 10.0 : 1 / 1
+R0 = 1 : 1 / 3
+R0 = 2 : 2 / 3
+R0 = 5 : 3 / 3
+    ell = 10.0 : 1 / 1
+R0 = 1 : 1 / 3
+R0 = 2 : 2 / 3
+R0 = 5 : 3 / 3
+End time: 2020-01-26 04:01:52.983784 |  sim : 51 
+Time taken: 516.168 (mins)
+Simulations Finished
