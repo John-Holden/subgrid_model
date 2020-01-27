@@ -59,7 +59,7 @@ if mode == "HPC":
     rho_Arr_hig = np.linspace(0.10, 0.400, 4)  #
     rho_Arr = np.hstack([rho_Arr_low, rho_Arr_med, rho_Arr_hig])
     # rho_Arr = rho_Arr_low
-    eff_sigma_Arr = np.array([50]) / alpha  # Dispersal distance in comp units (not physical)
+    eff_sigma_Arr = np.array([100]) / alpha  # Dispersal distance in comp units (not physical)
     dim_ = np.array([repeats, eff_sigma_Arr.shape[0], R0_Arr.shape[0], rho_Arr.shape[0]])  # parameter space dimension
     # DEFINE data structures to save results
     mortality = np.zeros(shape=dim_)

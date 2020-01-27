@@ -23,7 +23,7 @@ date_time=$(date '+%d-%m-%Y %H:%M:%S')
 #$ -t 1-100
 
 mode="HPC"
-sim_type="-debug"
+sim_type="-ell100m"
 sim_name="-full-rho-range"
 
 python3 mkdir.py $date_time $mode $sim_type $sim_name

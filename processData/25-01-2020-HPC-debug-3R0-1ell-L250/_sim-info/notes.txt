@@ -1,2 +1,0 @@
-66 correctly saved resutls for a lower domain size.
-Test and see outputs.
