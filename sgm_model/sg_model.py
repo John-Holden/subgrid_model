@@ -306,7 +306,7 @@ def main(settings, parameters):
         if dyn_plots[0]:  # IF TRUE, generate simulation data progression from T=0 at set intervals
             if time_step % dyn_plots[1] == 0:
                 T = plts.save_label(step=time_step)
-                save_path = os.getcwd() + '/animations_data/raw_data/'
+                save_path = os.getcwd() + '/animationsData/raw_data/'
                 np.save(save_path + T, np.array([p.susceptible, p.infected, p.removed]))
             # GET metric time-series data
 
@@ -326,6 +326,8 @@ def main(settings, parameters):
     num_infected = ts_num_infected[time_step]  # I @ last step
     num_removed = len(np.where(p.removed == 1)[0])  # R (-1 from initially infected)
     mortality = (num_infected + num_removed - 1)  # I + R
+
+    # todo test different condition, take perc*vel into accont in other step in the proess
     if p.percolation == 1:  # If boundary reached then non-zero velocity (km / day)
         velocity = max_d_reached / (time_step * 1000)
     elif p.percolation == 0:  # If boundary not reached then zero velocity (km / day)

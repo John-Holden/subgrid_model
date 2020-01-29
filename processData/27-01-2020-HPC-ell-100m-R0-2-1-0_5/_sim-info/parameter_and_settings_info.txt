@@ -1,0 +1,28 @@
+______Simulation Parameters_______
+l_time : 100
+time_horizon : 3650
+alpha : 5
+domain_sz : [200, 200]
+eff_disp : 20.0
+R0 : 2.0
+rho : 0.4
+R0 values : [ 0.5  1.   2. ] (m), # = 3
+Dispersal values : 100.0 -- 100.0(m), # = 1
+Density values : 0.001 -- 0.4, # = 58
+# HPC core repeats : 5
+
+______Simulation Settings_______
+out_path:/nobackup/py13jh/dispersal_model/processData/27-01-2020-HPC-ell100m-full-rho-range
+date:27-01-2020
+job_id:60
+plt_tseries:False
+save_figs:False
+dyn_plots:[False, 1, True]
+anim:False
+BCD3:True
+individual:False
+verbose:False
+HPC:HPC
+local_type:animation
+debug_time:True
+repeats:5

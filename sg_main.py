@@ -52,14 +52,14 @@ if mode == "HPC":
         save_id = '0' + str(job_id)
     # RUN Full parameter space : R0 | \ell | \rho
     # ---- Iterate indices as  ---> [i: dispersal, j:infectivity, k:tree density]
-    repeats = 5  # ensemble size = repeats * # HCP_cores
+    repeats = 3  # ensemble size = repeats * # HCP_cores
     R0_Arr = np.array([0.5, 1, 2])         # Basic reproduction number
-    rho_Arr_low = np.arange(0.001, 0.05, 0.001)  # Tree density range
+    rho_Arr_low = np.arange(0.0001, 0.050, 0.0001)  # Tree density range
     rho_Arr_med = np.arange(0.051, 0.10, 0.010)
-    rho_Arr_hig = np.linspace(0.10, 0.400, 4)  #
-    rho_Arr = np.hstack([rho_Arr_low, rho_Arr_med, rho_Arr_hig])
-    # rho_Arr = rho_Arr_low
-    eff_sigma_Arr = np.array([100]) / alpha  # Dispersal distance in comp units (not physical)
+    # rho_Arr_hig = np.linspace(0.10, 0.400, 4)
+    # rho_Arr = np.hstack([rho_Arr_low, rho_Arr_med, rho_Arr_hig])
+    rho_Arr = np.hstack([rho_Arr_low, rho_Arr_med]) # rho_Arr = rho_Arr_low
+    eff_sigma_Arr = np.array([50]) / alpha  # Dispersal distance in comp units (not physical)
     dim_ = np.array([repeats, eff_sigma_Arr.shape[0], R0_Arr.shape[0], rho_Arr.shape[0]])  # parameter space dimension
     # DEFINE data structures to save results
     mortality = np.zeros(shape=dim_)

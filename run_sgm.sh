@@ -23,8 +23,8 @@ date_time=$(date '+%d-%m-%Y %H:%M:%S')
 #$ -t 1-100
 
 mode="HPC"
-sim_type="-ell100m"
-sim_name="-full-rho-range"
+sim_type="-ell50m-R0-2-1-0_5"
+sim_name="-high-res-low-rho"
 
 python3 mkdir.py $date_time $mode $sim_type $sim_name
 python3 sg_main.py $SGE_TASK_ID $date_time $data_type $mode $sim_type $sim_name
