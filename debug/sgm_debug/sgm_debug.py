@@ -56,7 +56,6 @@ class Plots(object):
         elif step < 100000:
             return str(step)
 
-
     def plot_tseries(self, metric, labels, fit, saves_):
         import matplotlib.pyplot as plt
         """
@@ -75,7 +74,6 @@ class Plots(object):
         if fit:
             # Fit a function to the metric
             from scipy.optimize import curve_fit
-
             def exp(x, b):
                 # use a simple exponential
                 return np.exp(b * x)
@@ -91,9 +89,15 @@ class Plots(object):
         if "log" in labels["ylabel"]:
             ax.set_yscale('log')
 
+        print(labels["title"])
+        if labels["title"] == "computer runtime":
+            ax.set_title(labels["title"] + ": Tot elapsed = {}".format(round(np.sum(metric), 4)))
+        else:
+            ax.set_title(labels["title"])
+
         ax.set_xlabel(labels["xlabel"])
         ax.set_ylabel(labels["ylabel"])
-        ax.set_title(labels["title"])
+
         plt.legend()
         plt.grid()
         if save:
@@ -189,7 +193,7 @@ class SimInit(object):
         distances = self.dist_map[inf_ind]
         return distances.max()
 
-    def get_new_infected(self, p_infected, susceptible):
+    def get_new_infected(self, infected, susceptible):
         """
         The algorithm used to find the newly infected trees after each time-step.
         :param p_infected: array-like dtype=int, infected field, values taken  \in [1, T] where T = infectious lifetime
@@ -197,61 +201,44 @@ class SimInit(object):
         :return: array-like, the NEW-INFECTED cells in the domain
         """
         from scipy.ndimage import gaussian_filter
-        # todo new implementation
-        if 0:
-            import matplotlib.pyplot as plt
+        if 1:
             # GET All infected cells as 1's
             # -- infected field increases in time so have to reduce to a value of 1
-            p_infected = np.array(p_infected > 0).astype(float)
-            infected_ind = np.where(p_infected == 1)
+            infected = np.array(infected > 0).astype(float)
+            infected_ind = np.where(infected == 1)
             num_infected = len(infected_ind[0])
-            new_infected = np.zeros(p_infected.shape)
-            stdev3 = int(3*self.eff_disp)  # truncate to 3 standard deviations
-            subsect = np.zeros(shape=[2*stdev3 + 1, 2*stdev3 + 1])  # init empty sub-sect of array
-            subsect[stdev3, stdev3] = 1  # set mid-point to infectious state
-            print('---------\n')
-            # Blur the field with Gaussian kernel
-            blurred_field = self.beta * self.pre_factor * gaussian_filter(subsect,
+            pr_S_S = np.ones(infected.shape)  # Probability of remaining in S
+            std3 = int(3*self.eff_disp)  # Truncate to 3 standard deviations
+            subset = np.zeros(shape=[2*std3 + 1, 2*std3 + 1])  # init empty subset of 3 standard deviations
+            ones = np.ones(subset.shape)
+            subset[std3, std3] = 1  # set mid-point to infectious state
+            # Blur field with Gaussian kernel
+            blurred_field = self.beta * self.pre_factor * gaussian_filter(subset,
                                                                           sigma=[self.eff_disp, self.eff_disp],
                                                                           truncate=3.0)
-            rand_field = np.random.uniform(0, 1, size=blurred_field.shape)
-            for inf in range(num_infected):  # Iterate over each infected lattice position
-                # Sub-sect the infected field into N slices of 3 disp standard deviations x 3 disp standard deviations
+            # Iterate over each infected lattice position
+            for inf in range(num_infected):
+                # For each infected position apply gaussian filter and get Pr(S --> S)
                 row, col = infected_ind[0][inf], infected_ind[1][inf]
-                #
-                # pr_inf_site = np.zeros(p_infected.shape)
-                # pr_inf_site[row, col] = 1
-                # blurred_field = self.beta * self.pre_factor * gaussian_filter(pr_inf_site,
-                #                                                              sigma=[self.eff_disp, self.eff_disp],
-                #                                                              truncate=3.0)
-                #
-                # Compare with random probabilities to test for infected status
-
-                # If inf_pr > pr then infected state true
-                new_site_inf = np.where(blurred_field > np.random.permutation(rand_field), 1, 0).astype(int)
-                # Check for boundary effects, if so pass.
-                shpx = new_infected[row - stdev3:row + stdev3+1, col - stdev3:col + stdev3+1].shape
-                if 2*stdev3+1 == shpx[0] and 2*stdev3+1 == shpx[1]:
-                    # todo think of a new operation which combines probabilities via sub-section
-                    # todo I dont understand why but I dont think this method is adding probabilities correctly ?
-                    # todo test...
-                    # if len(np.where(susceptible[sub-sect]==1) == 0
-                    # then pass  # <-- this should miss out operations on infected trees with no
-                    #  availible trees to infect)
-                    new_infected[row-stdev3:row+stdev3+1, col-stdev3:col+stdev3+1] = new_site_inf  # set new infected
+                dim = pr_S_S[row - std3:row + std3 + 1, col - std3:col + std3 + 1].shape
+                # If infected tree within boundary
+                if 2*std3+1 == dim[0] and 2*std3+1 == dim[1]:
+                    pr_S_S[row-std3:row+std3+1, col-std3:col+std3+1] = \
+                        pr_S_S[row-std3:row+std3+1, col-std3:col+std3+1] * (ones - blurred_field)
+                # If infected tree not within 3 standard deviations of the boundary pass
                 else:
                     pass
 
-                # new_infected = new_infected + new_site_inf
-
-            new_infected = new_infected*susceptible
+            pr_S_I = np.ones(pr_S_S.shape) - pr_S_S  # Find probability of transitioning to infected
+            new_infected = np.where(pr_S_I > np.random.uniform(0, 1, size=infected.shape), 1, 0)  # Get new infected
+            new_infected = new_infected * susceptible  # Take away non-empty cells
             return new_infected
 
-        if 1:
+        if 0:
             from scipy.ndimage import gaussian_filter
             # GET All infected cells as 1's
             # -- infected field increases in time so have to reduce to a value of 1
-            p_infected = np.array(p_infected > 0).astype(float)
+            p_infected = np.array(infected > 0).astype(float)
             infected_ind = np.where(p_infected == 1)
             num_infected = len(infected_ind[0])
             # MAKE tensor : field
@@ -312,7 +299,7 @@ def main(settings, parameters):
         if verbose:
             t_0 = time.clock()
         # --- GET fields @ t+1 --- #
-        new_infected = 2 * p.get_new_infected(p_infected=p.infected, susceptible=p.susceptible)
+        new_infected = 2 * p.get_new_infected(infected=p.infected, susceptible=p.susceptible)
         p.infected = p.infected + (p.infected > 0) + new_infected # Transition to INFECTED class, add one to existing
         new_removed = np.array(p.infected == p.survival_times, dtype=int)  # Transition to REMOVED class
         p.removed = (p.removed + new_removed) > 0  # Add new_removed cells to removed class
@@ -368,26 +355,24 @@ def main(settings, parameters):
     ts_num_infected = ts_num_infected[: time_step + 1]
     ts_max_d = ts_max_d[: time_step+1] * p.alpha
     max_d_reached = ts_max_d.max()  # Maximum distance reached by the pathogen
+    max_d_reached = round(max_d_reached / 1000, 4)  # --> convert to km
+    velocity = max_d_reached / (time_step + 1)  # Velocity in units km/day
+
+    max_pos = round(p.dist_map.max() * p.alpha / 1000, 4)
     num_infected = ts_num_infected[time_step]  # I @ last step
     num_removed = len(np.where(p.removed == 1)[0])  # R (-1 from initially infected)
     mortality = (num_infected + num_removed - 1)  # I + R
-    velocity = max_d_reached / ((time_step+1) * 1000)  # Velocity in units km/day
     # GENERATE time series output plots over single simulation run
-    if "anim" in settings["out_path"]:
+    if settings["out_plots"]:
         plot_cls = Plots(p.beta, p.rho)
         plot_cls.save_settings(parameters, settings, save_path)  # Plots module contains plotting functions
         if settings["plt_tseries"]:
-            max_pos = round(p.dist_map.max() * p.alpha/1000, 4)
-            max_d_reached = round(max_d_reached/1000, 4)
             print('---> Max d reached = {} (km), max d possible = {} (km)'.format(max_d_reached, max_pos))
             # Plot max d metric
             label = {'title': "max d distance", 'xlabel': 'days', 'ylabel': 'distance (km)'}
             plot_cls.plot_tseries(metric=ts_max_d, labels=label, fit=False, saves_=[False, None])
             # Plot number of infected (SIR)
             label = {'title': "num infected", 'xlabel': 'days', 'ylabel': '# trees'}
-            plot_cls.plot_tseries(metric=ts_num_infected, labels=label, fit=False, saves_=[False, 'num_inf_0'])
-            # Plot log number of infected
-            label = {'title': "(log) num infected", 'xlabel': 'days', 'ylabel': 'log # trees'}
             plot_cls.plot_tseries(metric=ts_num_infected, labels=label, fit=False, saves_=[False, 'num_inf_0'])
             # Plot physical computer runtime stats
             t_debug = t_debug[:time_step]

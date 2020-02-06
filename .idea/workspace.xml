@@ -2,7 +2,18 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="5a973636-923c-48d9-aba3-9eae53a37057" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/debug/sg_main_debug.py" beforeDir="false" afterPath="$PROJECT_DIR$/debug/sg_main_debug.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/debug/sgm_debug/sgm_debug.py" beforeDir="false" afterPath="$PROJECT_DIR$/debug/sgm_debug/sgm_debug.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/run/processData/06-02-2020-HPC-param-sweep-ell-vs-beta/max_distance_km/001.npy" beforeDir="false" afterPath="$PROJECT_DIR$/run/processData/06-02-2020-HPC-param-sweep-ell-vs-beta/max_distance_km/001.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/run/processData/06-02-2020-HPC-param-sweep-ell-vs-beta/mortality/001.npy" beforeDir="false" afterPath="$PROJECT_DIR$/run/processData/06-02-2020-HPC-param-sweep-ell-vs-beta/mortality/001.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/run/processData/06-02-2020-HPC-param-sweep-ell-vs-beta/mortality_ratio/001.npy" beforeDir="false" afterPath="$PROJECT_DIR$/run/processData/06-02-2020-HPC-param-sweep-ell-vs-beta/mortality_ratio/001.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/run/processData/06-02-2020-HPC-param-sweep-ell-vs-beta/percolation/001.npy" beforeDir="false" afterPath="$PROJECT_DIR$/run/processData/06-02-2020-HPC-param-sweep-ell-vs-beta/percolation/001.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/run/processData/06-02-2020-HPC-param-sweep-ell-vs-beta/run_time/001.npy" beforeDir="false" afterPath="$PROJECT_DIR$/run/processData/06-02-2020-HPC-param-sweep-ell-vs-beta/run_time/001.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/run/processData/06-02-2020-HPC-param-sweep-ell-vs-beta/velocity/001.npy" beforeDir="false" afterPath="$PROJECT_DIR$/run/processData/06-02-2020-HPC-param-sweep-ell-vs-beta/velocity/001.npy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/run/processData/data_process.py" beforeDir="false" afterPath="$PROJECT_DIR$/run/processData/data_process.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/run/run_sgm.sh" beforeDir="false" afterPath="$PROJECT_DIR$/run/run_sgm.sh" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/run/sg_main.py" beforeDir="false" afterPath="$PROJECT_DIR$/run/sg_main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/run/sgm_model/sg_model.py" beforeDir="false" afterPath="$PROJECT_DIR$/run/sgm_model/sg_model.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -12,7 +23,8 @@
   </component>
   <component name="CoverageDataManager">
     <SUITE FILE_PATH="coverage/dispersal_model$data_process.coverage" NAME="data_process Coverage Results" MODIFIED="1580901383078" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/processData" />
-    <SUITE FILE_PATH="coverage/dispersal_model$sg_main_debug.coverage" NAME="sg_main_debug Coverage Results" MODIFIED="1580998307707" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/debug" />
+    <SUITE FILE_PATH="coverage/dispersal_model$data_process__1_.coverage" NAME="data_process Coverage Results" MODIFIED="1581013286958" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/run/processData" />
+    <SUITE FILE_PATH="coverage/dispersal_model$sg_main_debug.coverage" NAME="sg_main_debug Coverage Results" MODIFIED="1581013370147" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/debug" />
     <SUITE FILE_PATH="coverage/dispersal_model$sg_main.coverage" NAME="sg_main Coverage Results" MODIFIED="1580921163098" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/run" />
     <SUITE FILE_PATH="coverage/dispersal_model$sgm_debug.coverage" NAME="sgm_debug Coverage Results" MODIFIED="1580905028002" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/debug/sgm_debug" />
   </component>
@@ -32,56 +44,53 @@
           <entry key="gitignore" value="3" />
           <entry key="npy" value="5" />
           <entry key="png" value="5" />
-          <entry key="py" value="50" />
-          <entry key="sh" value="10" />
-          <entry key="txt" value="8" />
+          <entry key="py" value="75" />
+          <entry key="sh" value="12" />
+          <entry key="txt" value="10" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
           <entry key="Image" value="5" />
-          <entry key="PLAIN_TEXT" value="26" />
-          <entry key="Python" value="50" />
+          <entry key="PLAIN_TEXT" value="30" />
+          <entry key="Python" value="75" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="dummy" value="20" />
           <entry key="gitignore" value="50" />
-          <entry key="py" value="10952" />
-          <entry key="sh" value="142" />
+          <entry key="py" value="13708" />
+          <entry key="sh" value="159" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="PLAIN_TEXT" value="212" />
-          <entry key="Python" value="10952" />
+          <entry key="PLAIN_TEXT" value="229" />
+          <entry key="Python" value="13708" />
         </counts>
       </usages-collector>
     </session>
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/run/sg_main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="592">
-              <caret line="99" column="85" lean-forward="true" selection-start-line="99" selection-start-column="85" selection-end-line="99" selection-end-column="85" />
+            <state relative-caret-position="95">
+              <caret line="62" column="40" selection-start-line="62" selection-start-column="40" selection-end-line="62" selection-end-column="40" />
               <folding>
-                <element signature="e#7605#11249#0" />
+                <element signature="e#7421#11065#0" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/run/sgm_model/sg_model.py">
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/run/run_sgm.sh">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="120">
-              <caret line="69" column="25" selection-start-line="69" selection-start-column="25" selection-end-line="69" selection-end-column="25" />
-              <folding>
-                <element signature="e#0#136#1" />
-              </folding>
+            <state relative-caret-position="405">
+              <caret line="27" lean-forward="true" selection-start-line="27" selection-end-line="27" />
             </state>
           </provider>
         </entry>
@@ -101,6 +110,9 @@
       <find>alpha</find>
       <find>R0</find>
     </findStrings>
+    <replaceStrings>
+      <replace>std3</replace>
+    </replaceStrings>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -118,11 +130,12 @@
         <option value="$PROJECT_DIR$/debug/sgm_model_debug/__init__.py" />
         <option value="$PROJECT_DIR$/debug/animationsData_debug/animate.sh" />
         <option value="$PROJECT_DIR$/.gitignore" />
-        <option value="$PROJECT_DIR$/debug/sgm_debug/sgm_debug.py" />
+        <option value="$PROJECT_DIR$/run/processData/data_process.py" />
         <option value="$PROJECT_DIR$/debug/sg_main_debug.py" />
-        <option value="$PROJECT_DIR$/run/run_sgm.sh" />
+        <option value="$PROJECT_DIR$/debug/sgm_debug/sgm_debug.py" />
         <option value="$PROJECT_DIR$/run/sgm_model/sg_model.py" />
         <option value="$PROJECT_DIR$/run/sg_main.py" />
+        <option value="$PROJECT_DIR$/run/run_sgm.sh" />
       </list>
     </option>
   </component>
@@ -154,12 +167,6 @@
               <item name="dispersal_model" type="b2602c69:ProjectViewProjectNode" />
               <item name="dispersal_model" type="462c0819:PsiDirectoryNode" />
               <item name="run" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="dispersal_model" type="b2602c69:ProjectViewProjectNode" />
-              <item name="dispersal_model" type="462c0819:PsiDirectoryNode" />
-              <item name="run" type="462c0819:PsiDirectoryNode" />
-              <item name="processData" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -208,12 +215,12 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/processData" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/run/processData" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/processData/data_process.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/run/processData/data_process.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -289,17 +296,17 @@
       <method v="2" />
     </configuration>
     <list>
-      <item itemvalue="Python.data_process" />
       <item itemvalue="Python.sg_main_debug" />
       <item itemvalue="Python.sgm_debug" />
       <item itemvalue="Python.sg_main" />
+      <item itemvalue="Python.data_process" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Python.sg_main_debug" />
+        <item itemvalue="Python.data_process" />
         <item itemvalue="Python.sg_main" />
         <item itemvalue="Python.sgm_debug" />
-        <item itemvalue="Python.data_process" />
       </list>
     </recent_temporary>
   </component>
@@ -320,12 +327,12 @@
     <frame x="0" y="0" width="1920" height="1080" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.12034079" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.15974441" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32871288" />
-      <window_info active="true" anchor="bottom" x="85" y="1103" width="876" height="1027" id="Run" order="2" type="FLOATING" visible="true" weight="0.32953367" />
+      <window_info anchor="bottom" x="85" y="1103" width="876" height="1027" id="Run" order="2" type="FLOATING" weight="0.32953367" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -334,12 +341,12 @@
       <window_info anchor="bottom" id="Version Control" order="8" />
       <window_info anchor="bottom" id="Database Changes" order="9" show_stripe_button="false" />
       <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
-      <window_info anchor="bottom" x="1006" y="1113" width="728" height="975" id="Terminal" order="11" type="FLOATING" visible="true" weight="0.32970297" />
+      <window_info active="true" anchor="bottom" x="240" y="1129" width="728" height="975" id="Terminal" order="11" type="FLOATING" visible="true" weight="0.32970297" />
       <window_info anchor="bottom" x="85" y="1109" width="808" height="1017" id="Python Console" order="12" type="FLOATING" weight="0.32435232" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
-      <window_info anchor="right" id="SciView" order="3" visible="true" weight="0.36421725" />
+      <window_info anchor="right" id="SciView" order="3" visible="true" weight="0.38338658" />
       <window_info anchor="right" id="R Graphics" order="4" />
       <window_info anchor="right" id="R Packages" order="5" />
       <window_info anchor="right" id="Database" order="6" />
@@ -385,13 +392,6 @@
     <entry file="file://$PROJECT_DIR$/run/processData/30-01-2020-HPC-ell100m-R0-2-1-0_5-high-res/_sim-info/parameter_and_settings_info.txt">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/run/processData/data_process.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="540">
-          <caret line="64" column="118" selection-start-line="64" selection-start-column="118" selection-end-line="64" selection-end-column="118" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/Library/Python/3.7/lib/python/site-packages/scipy/ndimage/filters.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="609">
@@ -434,24 +434,73 @@
     <entry file="file://$PROJECT_DIR$/run/processData/ens-percolation-ell50.png">
       <provider selected="true" editor-type-id="images" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/debug/sg_main_debug.py">
+    <entry file="file://$PROJECT_DIR$/run/processData/06-02-2020-HPC-param-sweep-ell-vs-beta/_sim-info/parameter_and_settings_info.txt">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/run/__init__.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/run/processData/06-02-2020-HPC-param-sweep-ell-vs-constBeta/_sim-info/parameter_and_settings_info.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="750">
-          <caret line="50" lean-forward="true" selection-start-line="50" selection-end-line="50" />
+        <state relative-caret-position="315">
+          <caret line="21" column="10" lean-forward="true" selection-start-line="21" selection-start-column="10" selection-end-line="21" selection-end-column="10" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/run/processData/data_process.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="225">
+          <caret line="73" column="42" lean-forward="true" selection-start-line="73" selection-start-column="42" selection-end-line="73" selection-end-column="42" />
           <folding>
-            <element signature="e#318#327#0" expanded="true" />
+            <element signature="e#150#1493#0" />
+            <element signature="e#1569#3085#0" />
+            <marker date="1581013286947" expanded="true" signature="3706:3711" ph="..." />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/debug/sgm_debug/sgm_debug.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="642">
-          <caret line="321" column="16" selection-start-line="321" selection-start-column="16" selection-end-line="321" selection-end-column="16" />
+        <state relative-caret-position="60">
+          <caret line="195" selection-start-line="195" selection-end-line="234" selection-end-column="31" />
           <folding>
-            <element signature="e#216#3516#0" />
-            <element signature="e#3651#8027#0" />
-            <element signature="e#8342#13895#0" />
+            <element signature="e#216#3778#0" />
+            <element signature="e#255#294#0" />
+            <element signature="e#368#1465#0" />
+            <element signature="e#1507#1969#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/run/sgm_model/sg_model.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1109">
+          <caret line="321" column="55" selection-start-line="321" selection-start-column="55" selection-end-line="321" selection-end-column="55" />
+          <folding>
+            <element signature="e#0#136#1" />
+            <element signature="e#258#4309#0" />
+            <element signature="e#4353#4666#0" />
+            <element signature="e#4731#7263#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/debug/sg_main_debug.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="480">
+          <caret line="32" column="22" selection-start-line="32" selection-start-column="22" selection-end-line="32" selection-end-column="22" />
+          <folding>
+            <element signature="e#318#327#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/run/sg_main.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="95">
+          <caret line="62" column="40" selection-start-line="62" selection-start-column="40" selection-end-line="62" selection-end-column="40" />
+          <folding>
+            <element signature="e#7421#11065#0" />
           </folding>
         </state>
       </provider>
@@ -459,27 +508,7 @@
     <entry file="file://$PROJECT_DIR$/run/run_sgm.sh">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="405">
-          <caret line="27" column="4" selection-start-line="27" selection-start-column="4" selection-end-line="27" selection-end-column="4" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/run/sgm_model/sg_model.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="120">
-          <caret line="69" column="25" selection-start-line="69" selection-start-column="25" selection-end-line="69" selection-end-column="25" />
-          <folding>
-            <element signature="e#0#136#1" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/run/sg_main.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="592">
-          <caret line="99" column="85" lean-forward="true" selection-start-line="99" selection-start-column="85" selection-end-line="99" selection-end-column="85" />
-          <folding>
-            <element signature="e#7605#11249#0" />
-          </folding>
+          <caret line="27" lean-forward="true" selection-start-line="27" selection-end-line="27" />
         </state>
       </provider>
     </entry>
