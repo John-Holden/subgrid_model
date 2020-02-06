@@ -60,14 +60,12 @@ class SimInit(object):
         self.time_f = parameters["time_horizon"]  # the time-epoch BCD, simulation stops if runtime exceeds this
         self.survival_times = parameters['l_time'] + 1 * np.ones(dim)  # the survival time of each lattice point
         self.pre_factor = 2 * np.pi * (parameters["eff_disp"]**2)  # the dispersal normalisation constant
-        self.R0 = parameters["R0"]  # number of expected infectious cases per day @t=0 due to single infected for rho=1
-        self.beta = self.R0 / self.pre_factor  # The probability field
+        self.beta = parameters["beta"]  # The probability field
         try:
             # Check beta defines a probability \in [0, 1]
             assert self.beta < 1
         except:
             print(self.eff_disp, ' disp factor')
-            print(self.R0, ' r0')
             print(self.pre_factor, ' pre factor')
             print(self.beta, ' beta')
             print("Unphysical probability")

@@ -25,9 +25,11 @@ date_time=$(date '+%d-%m-%Y %H:%M:%S')
 mode="HPC"
 sim_type="-param-sweep"
 sim_name="-ell-vs-beta"
+iD=1
+SGE_TASK_ID
 
 python3 mkdir.py $date_time $mode $sim_type $sim_name
-python3 sg_main.py $SGE_TASK_ID $date_time $data_type $mode $sim_type $sim_name
+python3 sg_main.py $iD $date_time $data_type $mode $sim_type $sim_name
 elif [ "$hpc_switch" == 0 ]
  then
 

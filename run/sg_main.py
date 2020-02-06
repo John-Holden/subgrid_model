@@ -50,7 +50,7 @@ if mode == "HPC":
         save_id = '00' + str(job_id)
     if 10 <= int(job_id) <= 100:
         save_id = '0' + str(job_id)
-    # RUN Full parameter space : R0 | \ell | \rho
+    # RUN Full parameter space : beta | \ell | \rho
     # ---- Iterate indices as  ---> [i: dispersal, j:infectivity, k:tree density]
     repeats = 3  # ensemble size = repeats * # HCP_cores
     # Rho array has different resolutions for different different points through rho-space
@@ -59,10 +59,10 @@ if mode == "HPC":
     # rho_Arr_hig = np.linspace(0.10, 0.400, 4)
     # rho_Arr = np.hstack([rho_Arr_low, rho_Arr_med, rho_Arr_hig])
     # rho_Arr = np.hstack([rho_Arr_low, rho_Arr_med]) # rho_Arr = rho_Arr_low
-    rho_Arr = np.array([0.010])
-    R0_Arr = np.linspace(0.5, 9.5, 19)  # Proxy for basic reproduction number
-    eff_sigma_Arr = np.linspace(10, 100, 19) / alpha  # Dispersal distance in comp units (not physical)
-    dim_ = np.array([repeats, eff_sigma_Arr.shape[0], R0_Arr.shape[0], rho_Arr.shape[0]])  # parameter space dimension
+    rho_Arr = np.array([0.050])
+    beta_Arr = np.arange(0.0, 1.0, 0.05)
+    eff_sigma_Arr = np.linspace(5, 50, beta_Arr.shape[0]) / alpha  # Dispersal distance in comp units (not physical
+    dim_ = np.array([repeats, eff_sigma_Arr.shape[0], beta_Arr.shape[0], rho_Arr.shape[0]])  # parameter space dimension
     # DEFINE data structures to save results
     mortality = np.zeros(shape=dim_)
     run_times = np.zeros(shape=dim_)
@@ -79,9 +79,9 @@ if mode == "HPC":
         for i, eff_disp in enumerate(eff_sigma_Arr):  # ITERATE dispersal kernel
             print('    ell = {} : {} / {}'.format(eff_disp, i+1, dim_[1]))
             params["eff_disp"] = eff_disp
-            for j, R0 in enumerate(R0_Arr):  # ITERATE infection rates
-                print('R0 = {} : {} / {}'.format(R0, j+1, dim_[2]))
-                params["R0"] = R0
+            for j, beta in enumerate(beta_Arr):  # ITERATE infection rates
+                print('beta = {} : {} / {}'.format(beta, j+1, dim_[2]))
+                params["beta"] = beta
                 for k, rho in enumerate(rho_Arr):  # ITERATE through density values
                     params["rho"] = rho
                     results = sg_model.main(settings, params)
@@ -101,21 +101,18 @@ if mode == "HPC":
                 np.save(output_path + "/mortality_ratio/" + save_id, mortality_ratio)
 
     # #### END FULL PARAM SWEEP # ####
-
     tf = time.process_time() - t0
     tf = np.float64(tf / 60)
     print('End time: {} |  sim : {} '.format(datetime.datetime.now(), str(job_id)))
     print("Time taken: {} (mins)".format(tf.round(3)))
     # WRITE parameters, settings and ensemble data to file
-    R0_str = str(R0_Arr)+' (m), # = '+str(len(R0_Arr))
+    beta_str = str(beta_Arr)+' (m), # = '+str(len(beta_Arr))
     rho_str = str(rho_Arr[0].round(4))+' -- '+str(rho_Arr[-1].round(4))+', # = '+str(len(rho_Arr))
     ell_str = str(eff_sigma_Arr[0]*alpha)+' -- '+str(eff_sigma_Arr[-1]*alpha)+'(m), # = '+str(len(eff_sigma_Arr))
     output_path = settings["out_path"]
     # Save arrays used
-    beta_Arr = R0_Arr / (2 * np.pi * eff_sigma_Arr ** 2)
-    np.save(output_path + '/_sim-info/R0_Arr', R0_Arr)
-    np.save(output_path + '/_sim-info/rho_Arr', rho_Arr)
     np.save(output_path + '/_sim-info/beta_Arr', beta_Arr)
+    np.save(output_path + '/_sim-info/rho_Arr', rho_Arr)
     np.save(output_path + '/_sim-info/disp_Arr', eff_sigma_Arr)
     # Save dictionaries
     settings["repeats"] = repeats
@@ -128,7 +125,7 @@ if mode == "HPC":
         info_file.write("______Simulation Parameters_______" + "\n")
         for parameter in params:
             info_file.write(parameter + ' : ' + str(params[parameter]) + '\n')
-        info_file.write("R0 values : {}".format(R0_str) + '\n')
+        info_file.write("Beta values : {}".format(beta_str) + '\n')
         info_file.write("Dispersal values : {}".format(ell_str) + '\n')
         info_file.write("Density values : {}".format(rho_str) + '\n')
         info_file.write("# HPC core repeats : {}".format(repeats) + '\n')
