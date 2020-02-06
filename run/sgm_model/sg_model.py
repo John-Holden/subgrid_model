@@ -14,7 +14,6 @@ class SimInit(object):
     def __init__(self, parameters):
         """
         :param parameters: dictionary, keys are strings or parameter names, values are parameter values
-        :param domain: array-like, this is the lattice-domain of size n x n, full of floats drawn from a Poison process
         """
         np.random.seed()
         dim = parameters["domain_sz"]  # Dimension of domain

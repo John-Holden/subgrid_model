@@ -8,7 +8,7 @@
 # sim_name | input a string to append to the output file to identify simulation runs
 # data_type | currently set to lattice i.e. simple square homogeneous lattice 
 
-hpc_switch=0
+hpc_switch=1
 
 ###########__________Run script__________#############
 if [ "$hpc_switch" == 1 ]
@@ -23,8 +23,8 @@ date_time=$(date '+%d-%m-%Y %H:%M:%S')
 #$ -t 1-100
 
 mode="HPC"
-sim_type="-ell50m-R0-2-1-0_5"
-sim_name="-high-res-low-rho"
+sim_type="-param-sweep"
+sim_name="-ell-vs-beta"
 
 python3 mkdir.py $date_time $mode $sim_type $sim_name
 python3 sg_main.py $SGE_TASK_ID $date_time $data_type $mode $sim_type $sim_name

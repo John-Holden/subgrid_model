@@ -53,13 +53,15 @@ if mode == "HPC":
     # RUN Full parameter space : R0 | \ell | \rho
     # ---- Iterate indices as  ---> [i: dispersal, j:infectivity, k:tree density]
     repeats = 3  # ensemble size = repeats * # HCP_cores
-    R0_Arr = np.array([0.5, 1, 2])         # Basic reproduction number
-    rho_Arr_low = np.arange(0.0001, 0.050, 0.0001)  # Tree density range
-    rho_Arr_med = np.arange(0.051, 0.10, 0.010)
+    # Rho array has different resolutions for different different points through rho-space
+    # rho_Arr_low = np.arange(0.0001, 0.050, 0.0001)  # Tree density range
+    # rho_Arr_med = np.arange(0.051, 0.10, 0.010)
     # rho_Arr_hig = np.linspace(0.10, 0.400, 4)
     # rho_Arr = np.hstack([rho_Arr_low, rho_Arr_med, rho_Arr_hig])
-    rho_Arr = np.hstack([rho_Arr_low, rho_Arr_med]) # rho_Arr = rho_Arr_low
-    eff_sigma_Arr = np.array([50]) / alpha  # Dispersal distance in comp units (not physical)
+    # rho_Arr = np.hstack([rho_Arr_low, rho_Arr_med]) # rho_Arr = rho_Arr_low
+    rho_Arr = np.array([0.010])
+    R0_Arr = np.linspace(0.5, 9.5, 19)  # Proxy for basic reproduction number
+    eff_sigma_Arr = np.linspace(10, 100, 19) / alpha  # Dispersal distance in comp units (not physical)
     dim_ = np.array([repeats, eff_sigma_Arr.shape[0], R0_Arr.shape[0], rho_Arr.shape[0]])  # parameter space dimension
     # DEFINE data structures to save results
     mortality = np.zeros(shape=dim_)
@@ -99,25 +101,29 @@ if mode == "HPC":
                 np.save(output_path + "/mortality_ratio/" + save_id, mortality_ratio)
 
     # #### END FULL PARAM SWEEP # ####
-    # Record meta-data human readable + pickle
+
     tf = time.process_time() - t0
     tf = np.float64(tf / 60)
     print('End time: {} |  sim : {} '.format(datetime.datetime.now(), str(job_id)))
     print("Time taken: {} (mins)".format(tf.round(3)))
-    # WRITE parameters and settings to file
+    # WRITE parameters, settings and ensemble data to file
     R0_str = str(R0_Arr)+' (m), # = '+str(len(R0_Arr))
     rho_str = str(rho_Arr[0].round(4))+' -- '+str(rho_Arr[-1].round(4))+', # = '+str(len(rho_Arr))
     ell_str = str(eff_sigma_Arr[0]*alpha)+' -- '+str(eff_sigma_Arr[-1]*alpha)+'(m), # = '+str(len(eff_sigma_Arr))
     output_path = settings["out_path"]
+    # Save arrays used
+    beta_Arr = R0_Arr / (2 * np.pi * eff_sigma_Arr ** 2)
+    np.save(output_path + '/_sim-info/R0_Arr', R0_Arr)
+    np.save(output_path + '/_sim-info/rho_Arr', rho_Arr)
+    np.save(output_path + '/_sim-info/beta_Arr', beta_Arr)
+    np.save(output_path + '/_sim-info/disp_Arr', eff_sigma_Arr)
     # Save dictionaries
     settings["repeats"] = repeats
     with open(output_path + '/_sim-info/sim-settings.pickle', 'wb') as handle:
         pickle.dump(settings, handle, protocol=pickle.HIGHEST_PROTOCOL)
     with open(output_path + '/_sim-info/sim-parameters.pickle', 'wb') as handle:
         pickle.dump(params, handle, protocol=pickle.HIGHEST_PROTOCOL)
-    np.save(output_path + '/_sim-info/rho_Arr', rho_Arr)
-    np.save(output_path + '/_sim-info/R0_Arr', R0_Arr)
-    np.save(output_path + '/_sim-info/disp_Arr', eff_sigma_Arr)
+    # Save human-readable .txt
     with open(output_path + "/_sim-info/parameter_and_settings_info.txt", "w+") as info_file:
         info_file.write("______Simulation Parameters_______" + "\n")
         for parameter in params:
