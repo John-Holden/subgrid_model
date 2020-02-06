@@ -80,7 +80,6 @@ if mode == "HPC":
             print('    ell = {} : {} / {}'.format(eff_disp, i+1, dim_[1]))
             params["eff_disp"] = eff_disp
             for j, beta in enumerate(beta_Arr):  # ITERATE infection rates
-                print('beta = {} : {} / {}'.format(beta, j+1, dim_[2]))
                 params["beta"] = beta
                 for k, rho in enumerate(rho_Arr):  # ITERATE through density values
                     params["rho"] = rho
