@@ -309,11 +309,11 @@ def main(settings, parameters):
     # ________________END ALGORITHM________________ #
     ts_num_infected = ts_num_infected[: time_step + 1]
     ts_max_d = ts_max_d[: time_step+1] * p.alpha
-    max_d_reached = ts_max_d.max()  # Maximum distance reached by the pathogen in (m)
+    max_d_reached = ts_max_d.max()/1000  # Maximum distance reached by the pathogen in (km)
     num_infected = ts_num_infected[time_step]  # I @ last step
     num_removed = len(np.where(p.removed == 1)[0])  # R (-1 from initially infected)
     mortality = (num_infected + num_removed - 1)  # I + R
-    velocity = max_d_reached / ((time_step+1) * 1000)  # get velocity in (km/day)
+    velocity = max_d_reached / (time_step+1)  # get velocity in (km/day)
     # GENERATE time series output plots over single simulation run
     if "anim" in settings["out_path"]:
         plot_cls = Plots(p.beta, p.rho)

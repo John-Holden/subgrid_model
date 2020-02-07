@@ -29,7 +29,7 @@ class Plots:
 
         self.rho_Arr = np.load(data_directory + '/_sim-info/rho_Arr.npy')
         self.beta_Arr = np.load(data_directory + '/_sim-info/beta_Arr.npy')
-        self.R0_Arr = np.load(data_directory + '/_sim-info/R0_Arr.npy')
+        # self.R0_Arr = np.load(data_directory + '/_sim-info/R0_Arr.npy')
         self.disp_Arr = np.load(data_directory + '/_sim-info/disp_Arr.npy') * self.params["alpha"]
         return
 
@@ -65,18 +65,20 @@ class Plots:
             np.save(os.getcwd() + '/' + 'rho-' + self.field + '-mapping' + saveData[1], ensemble_data)
 
     def plot_2D(self, ensemble_data, saveFig, saveData):
-        fig, ax = plt.subplots()
-        rho = self.rho_Arr[0]
-        extent = [self.beta_Arr[0], self.beta_Arr[-1], self.disp_Arr[0], self.disp_Arr[-1]]
-        ensemble_data = ensemble_data[:, :, 0] * self.set_plots["scale"]
-        im = ax.imshow(ensemble_data, origin='lower', extent=extent)
-        ax.set_ylabel(r"$\ell$", size=14)
-        ax.set_xlabel(r"$\beta$", size=14)
-        ax.set_aspect("auto")
-        ax.set_title(r"$\rho = {}$".format(rho))
-        cbar = plt.colorbar(im)
-        cbar.set_label(self.set_plots["ylabel"])
-        plt.show()
+        for i in range(ensemble_data.shape[2]):
+            fig, ax = plt.subplots()
+            rho = self.rho_Arr[i]
+            extent = [self.beta_Arr[0], self.beta_Arr[-1], self.disp_Arr[0], self.disp_Arr[-1]]
+            data = ensemble_data[:, :, i] * self.set_plots["scale"]
+            # data = np.where(np.logical_and(data>20, data<21), data, np.nan)
+            im = ax.imshow(data, origin='lower', extent=extent)
+            ax.set_ylabel(r"$\ell$", size=14)
+            ax.set_xlabel(r"$\beta$", size=14)
+            ax.set_aspect("auto")
+            ax.set_title(r"$\rho = {}$".format(rho))
+            cbar = plt.colorbar(im)
+            cbar.set_label(self.set_plots["ylabel"])
+            plt.show()
 
 
     def get_ensemble(self, results_name, saveDat, show_individual):
@@ -91,14 +93,13 @@ class Plots:
         dim_ = np.load(data_path + '/' + file_list[0]).shape[1:4]  # drop extra dimension for repeats
         ensemble_data = np.zeros(dim_)
         hpc_core_repeat = np.load(data_path + '/' + file_list[0]).shape[0]
-        null_count = 0
         for c, file in enumerate(file_list):  # iterate through files
             print('File: {} / {}'.format(c, len(file_list)))
             hpc_core_result = np.load(data_path + '/' + file)
             for repeat in hpc_core_result:  # iterate through repeated results get sum for each file
                 ensemble_data = ensemble_data + repeat
 
-        ensemble_data = ensemble_data / ((hpc_core_repeat * len(file_list)) - null_count)  # averaged
+        ensemble_data = ensemble_data / (hpc_core_repeat * len(file_list))  # averaged
         return ensemble_data
 
 
@@ -106,8 +107,9 @@ if __name__ == '__main__':
     # Data fields saved
     fields = ['max_distance_km', 'mortality', 'mortality_ratio', 'percolation', 'run_time', 'velocity']
     # data_dir = '06-02-2020-HPC-param-sweep-ell-vs-beta'
-    data_dir = '06-02-2020-HPC-param-sweep-ell-vs-constBeta'
-    field_ = fields[5]
+    # data_dir = '06-02-2020-HPC-param-sweep-ell-vs-constBeta'
+    data_dir = '06-02-2020-HPC-param-sweep-100ell-vs-100beta-ens-300'
+    field_ = fields[3]
     # Plot data
     plots = Plots(data_dir, field_)
     ensemble_Av = plots.get_ensemble(results_name=data_dir, saveDat=[False, '-delMe'], show_individual=False)
