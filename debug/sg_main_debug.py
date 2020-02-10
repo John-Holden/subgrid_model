@@ -15,7 +15,7 @@ params = {}  # default simulation parameters
 settings = {"out_path": os.getcwd()+'/animationsData/'}  # simulation settings
 # SET simulation settings & boundary conditions
 settings["save_figs"] = False
-settings["out_plots"] = False
+settings["out_plots"] = True
 settings["anim"] = True
 settings["BCD3"] = True  # Percolation condition : if False, simulations will run until pathogen dies
 settings["verbose"] = True
@@ -24,7 +24,7 @@ settings["dyn_plots"] = [True, 1, True]
 # SET simulation parameters
 params["R0"] = 1  # number of secondary infections
 params["rho"] = 0.100  # Typically \in [0.001, 0.100]
-params["beta"] = 0.0100
+params["beta"] = 0.0010
 params["l_time"] = 100  # L# ife time of disease
 dispersal_ = 20  # average dispersal distance in (m)
 alpha = 5  # Lattice constant in (m)
@@ -32,8 +32,8 @@ eff_dispersal = dispersal_ / alpha  # Convert the dispersal distance from km to 
 eff_dispersal = np.round(eff_dispersal, 5)
 params["eff_disp"] = eff_dispersal
 params["alpha"] = alpha
-params["time_horizon"] = 3650
-params["domain_sz"] = [500, 500]  # If channel [NxM] where N < M
+params["time_horizon"] = 200
+params["domain_sz"] = [50, 50]  # If channel [NxM] where N < M
 # BEGIN
 print("Running: ")
 Results = model.main(settings, params)

@@ -3,6 +3,9 @@
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
       <excludeFolder url="file://$MODULE_DIR$/debug/animationsData_debug" />
+      <excludeFolder url="file://$MODULE_DIR$/model_test/animationsData_test" />
+      <excludeFolder url="file://$MODULE_DIR$/run/animationsData" />
+      <excludeFolder url="file://$MODULE_DIR$/run/outputData" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

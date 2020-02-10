@@ -70,19 +70,24 @@ class Plots:
             rho = self.rho_Arr[i]
             extent = [self.beta_Arr[0], self.beta_Arr[-1], self.disp_Arr[0], self.disp_Arr[-1]]
             data = ensemble_data[:, :, i] * self.set_plots["scale"]
-            # data = np.where(np.logical_and(data>20, data<21), data, np.nan)
+            data = np.where(np.logical_and(data>9.5, data<10.5), data, np.nan)
             im = ax.imshow(data, origin='lower', extent=extent)
             ax.set_ylabel(r"$\ell$", size=14)
             ax.set_xlabel(r"$\beta$", size=14)
             ax.set_aspect("auto")
             ax.set_title(r"$\rho = {}$".format(rho))
             cbar = plt.colorbar(im)
-            cbar.set_label(self.set_plots["ylabel"])
+            plt.plot([0, 0.115], [30, 30], c='C0')
+            plt.plot([0.115, 0.115], [0, 30], c='C0')
+
+            plt.plot([0, 0.05], [40, 40], c='C1')
+            plt.plot([0.05, 0.05], [0, 40], c='C1')
+
+            plt.plot([0, 0.60], [20, 20], c='C2')
+            plt.plot([0.60, 0.60], [0, 20], c='C2')
             plt.show()
 
-
     def get_ensemble(self, results_name, saveDat, show_individual):
-
         """
         :param results_name: directory to shape load and process into a npy file
         :param saveDat: bool, if True save to file
@@ -109,7 +114,8 @@ if __name__ == '__main__':
     # data_dir = '06-02-2020-HPC-param-sweep-ell-vs-beta'
     # data_dir = '06-02-2020-HPC-param-sweep-ell-vs-constBeta'
     data_dir = '06-02-2020-HPC-param-sweep-100ell-vs-100beta-ens-300'
-    field_ = fields[3]
+    # data_dir = '07-02-2020-HPC-param-sweep-100ell-vs-100beta-ens-300-small'
+    field_ = fields[5]
     # Plot data
     plots = Plots(data_dir, field_)
     ensemble_Av = plots.get_ensemble(results_name=data_dir, saveDat=[False, '-delMe'], show_individual=False)
