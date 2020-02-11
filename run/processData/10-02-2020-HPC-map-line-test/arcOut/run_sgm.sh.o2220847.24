@@ -1,0 +1,22 @@
+## Running job 2220847.24 on host dc4s3b1d.arc3.leeds.ac.uk
+##
+## Resources granted:
+##
+## h_vmem = 1G
+## h_rt   = 48:00:00
+## disk   = 1G
+
+Running HPC simulation, type -map-line
+Start time:  2020-02-10 16:54:04.635289  |  sim :  24
+    ell = 8.0 : 1 / 3
+    ell = 6.0 : 2 / 3
+    ell = 4.0 : 3 / 3
+    ell = 8.0 : 1 / 3
+    ell = 6.0 : 2 / 3
+    ell = 4.0 : 3 / 3
+    ell = 8.0 : 1 / 3
+    ell = 6.0 : 2 / 3
+    ell = 4.0 : 3 / 3
+End time: 2020-02-10 17:42:25.001120 |  sim : 24 
+Time taken: 48.306 (mins)
+Simulations Finished
