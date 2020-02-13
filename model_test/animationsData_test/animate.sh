@@ -3,7 +3,7 @@
 # Generate a simulation based on frames
 rm -rf /raw_data/.DS_Store
 
-python3 animate_debug.py
+python3 animate_test.py
 rate1=15
 rate2=30
 

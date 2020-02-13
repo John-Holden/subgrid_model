@@ -1,0 +1,28 @@
+______Simulation Parameters_______
+l_time : 100
+time_horizon : 3650
+alpha : 5
+domain_sz : [200, 200]
+eff_disp : 3.8
+beta : 0.6
+rho : 0.4
+Beta values : [ 0.2  0.4  0.6] (m), # = 3
+Dispersal values : 25.0 -- 19.0(m), # = 3
+Density values : 0.0001 -- 0.4, # = 508
+# HPC core repeats : 3
+
+______Simulation Settings_______
+out_path:/nobackup/py13jh/dispersal_model/run/processData/12-02-2020-HPC-HresLine-mapping
+date:12-02-2020
+job_id:67
+plt_tseries:False
+save_figs:False
+dyn_plots:[False, 1, True]
+anim:False
+BCD3:True
+individual:False
+verbose:False
+HPC:HPC
+local_type:animation
+debug_time:True
+repeats:3

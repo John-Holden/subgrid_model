@@ -1,0 +1,19 @@
+______Parameter settings_______
+rho:0.05
+beta:0.0002
+l_time:100
+eff_disp:20.0
+alpha:5
+time_horizon:3650
+row_dim:250
+col_dim:250
+
+______Simulation parameters_______
+out_path:/Users/py13jh/PycharmProjects/dispersal_model/anim-single-debug/animationsData/
+save_figs:False
+out_plots:True
+anim:True
+BCD3:True
+verbose:True
+plt_tseries:True
+dyn_plots:[True, 1, True]

@@ -238,7 +238,7 @@ def main(settings, parameters):
     of non-local dispersal between trees. First a while loop is triggered where the sgm_model algorithm is implemented.
     After the simulation ends a series of time-series plots can be plotted to show disease progression.
 
-    :param settings: dict, simulation settings controls what type of simulation is run and how
+    :param settings: dict, simulation settings controls what type of simulation is run-HPC and how
     :param parameters: dict, stores sgm_model parameters
     :param domain: array-like, this is the field which is to be processed into an effect landscape
     :return: (1) float, num_removed: the number of trees killed in the simulation "mortality"
@@ -254,7 +254,6 @@ def main(settings, parameters):
     ts_num_removed = np.zeros(p.time_f)
     in_progress, time_step, num_infected, num_removed = [True, 0, 1, 0]
     verbose = settings["verbose"]  # control output print-to-screens
-    test = settings["test_R0"]
     dyn_plots = settings["dyn_plots"]  # control settings to 'dynamic-plots' .png files are generated and saved
     # ________________Run Algorithm________________ #
     # Each time-step take as days
@@ -274,14 +273,26 @@ def main(settings, parameters):
                 save_path = os.getcwd() + '/animationsData_test/raw_data/'
                 np.save(save_path + t, np.array([p.susceptible, p.infected, p.removed]))
 
-        # --- GET fields @ t+1 --- #
-        new_infected = 2 * p.get_new_infected(infected=p.infected, susceptible=p.susceptible)
-        new_removed = np.array((new_infected > 0), dtype=int)
-        p.removed = (p.removed + new_removed) > 0  # Add new_removed cells to removed class
-        p.susceptible = p.susceptible * (np.logical_not(p.removed == 1))  # Remove infected from SUSCEPTIBLE class
-        infected_ind = np.where(p.infected > 0)
-        num_infected = len(infected_ind[0])
-        num_removed = len(np.where(p.removed == 1)[0])
+        # --- GET field + R0 @ t+1 --- #
+        if settings["model_test"]:
+            new_infected = 2 * p.get_new_infected(infected=p.infected, susceptible=p.susceptible)
+            new_removed = np.array((new_infected > 0), dtype=int)  # Transition newly infected trees straight to R class
+            p.removed = (p.removed + new_removed) > 0  # Add new_removed cells to removed class
+            p.susceptible = p.susceptible * (np.logical_not(p.removed == 1))  # Remove infected from SUSCEPTIBLE class
+            infected_ind = np.where(p.infected > 0)
+            num_infected = len(infected_ind[0])
+            num_removed = len(np.where(p.removed == 1)[0])
+        elif not settings["model_test"]:
+            # --- GET fields epidemic @ t+1 --- #
+            new_infected = 2 * p.get_new_infected(infected=p.infected, susceptible=p.susceptible)
+            p.infected = p.infected + (p.infected > 0) + new_infected  # Transition to INFECTED class, add one to existing
+            new_removed = np.array(p.infected == p.survival_times, dtype=int)  # Transition to REMOVED class
+            p.removed = (p.removed + new_removed) > 0  # Add new_removed cells to removed class
+            p.susceptible = p.susceptible * (np.logical_not(p.infected > 1))  # Remove infected from SUSCEPTIBLE class
+            p.infected = p.infected * (np.logical_not(new_removed == 1))  # remove dead trees from Infected class
+            infected_ind = np.where(p.infected > 0)
+            num_infected = len(infected_ind[0])
+            num_removed = len(np.where(p.removed == 1)[0])
 
         if verbose:  # Print out step max distance reached and #Infecteds
             print("Step: {}| #removed = {}".format(time_step, num_removed))
@@ -316,7 +327,8 @@ def main(settings, parameters):
         time_step += 1
         # __________STEP ITERATION COMPLETE_________ #
     # ________________END ALGORITHM________________ #
-    print("...END...")
+    if verbose:
+        print("...DONE...")
     ts_num_infected = ts_num_infected[: time_step + 1]
     ts_num_removed = ts_num_removed[: time_step+1]  # I @ last step
     ts_max_d = ts_max_d[: time_step+1] * p.alpha
@@ -327,7 +339,7 @@ def main(settings, parameters):
     num_infected = ts_num_infected[time_step]  # I @ last step
     num_removed = len(np.where(p.removed == 1)[0])  # R (-1 from initially infected)
     mortality = (num_infected + num_removed - 1)  # I + R
-    # GENERATE time series output plots over single simulation run
+    # GENERATE time series output plots over single simulation run-HPC
     if settings["out_plots"]:
         plot_cls = Plots(p.beta, p.rho)
         plot_cls.save_settings(parameters, settings, save_path)  # Plots module contains plotting functions
