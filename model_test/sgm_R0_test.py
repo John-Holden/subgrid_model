@@ -2,7 +2,7 @@
 Created on Wed May 30 14:19:32 2018
 @author: John Holden
 Compute either the epidemiological parameter space behaviuor over an ensemble or simulate an individual realisation.
-This code can be run-HPC on the HPC or local machine for single or ensemble-averages. To run-HPC, execute ./run_SSTML.sh in
+This code can be run_HPC on the HPC or local machine for single or ensemble-averages. To run_HPC, execute ./run_SSTML.sh in
 terminal directory.
 """
 import os
@@ -12,12 +12,12 @@ from math import log
 import sgm_test.sg_model_test as model
 import matplotlib.pyplot as plt
 
-print("Running anim-single-debug...")
+print("Running model_anim...")
 params = {}  # default simulation parameters
 settings = {"out_path": os.getcwd()+'/animationsData/'}  # simulation settings
 # SET simulation settings & boundary conditions
 settings["anim"] = False
-settings["BCD3"] = False  # Percolation condition : if False, simulations will run-HPC until pathogen dies
+settings["BCD3"] = False  # Percolation condition : if False, simulations will run_HPC until pathogen dies
 settings["verbose"] = False
 settings["save_figs"] = False
 settings["out_plots"] = False
@@ -25,7 +25,7 @@ settings["model_test"] = True
 settings["dyn_plots"] = [False, 1, True]
 alpha = 5  # Lattice constant in (m)
 dispersal_ = 50  # average dispersal distance in (m)
-params["rho"] = 0.100  # Typically \in [0.001, 0.100]
+params["rho"] = 0.10  # Typically \in [0.001, 0.100]
 params["l_time"] = 100  # L# ife time of disease
 params["alpha"] = alpha
 eff_dispersal = dispersal_ / alpha  # Convert the dispersal distance from km to computer units
@@ -35,9 +35,9 @@ params["eff_disp"] = eff_dispersal
 # If model_test True then
 params["time_horizon"] = params["l_time"]
 # BEGIN Ensemble
-ensemble_size = 100
 plot_ = False
-beta_Arr = np.linspace(0.0001, 0.99, 30)
+ensemble_size = 100
+beta_Arr = np.linspace(0.0001, 0.0030, 30)
 R0_Arr = np.zeros(shape=[2, beta_Arr.shape[0]])
 
 for i, beta in enumerate(beta_Arr):

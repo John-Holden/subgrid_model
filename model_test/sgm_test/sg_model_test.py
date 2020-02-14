@@ -238,7 +238,7 @@ def main(settings, parameters):
     of non-local dispersal between trees. First a while loop is triggered where the sgm_model algorithm is implemented.
     After the simulation ends a series of time-series plots can be plotted to show disease progression.
 
-    :param settings: dict, simulation settings controls what type of simulation is run-HPC and how
+    :param settings: dict, simulation settings controls what type of simulation is run_HPC and how
     :param parameters: dict, stores sgm_model parameters
     :param domain: array-like, this is the field which is to be processed into an effect landscape
     :return: (1) float, num_removed: the number of trees killed in the simulation "mortality"
@@ -339,7 +339,7 @@ def main(settings, parameters):
     num_infected = ts_num_infected[time_step]  # I @ last step
     num_removed = len(np.where(p.removed == 1)[0])  # R (-1 from initially infected)
     mortality = (num_infected + num_removed - 1)  # I + R
-    # GENERATE time series output plots over single simulation run-HPC
+    # GENERATE time series output plots over single simulation run_HPC
     if settings["out_plots"]:
         plot_cls = Plots(p.beta, p.rho)
         plot_cls.save_settings(parameters, settings, save_path)  # Plots module contains plotting functions
