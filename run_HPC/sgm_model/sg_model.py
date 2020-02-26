@@ -102,38 +102,38 @@ class SimInit(object):
         :return: array-like, the NEW-INFECTED cells in the domain
         """
         from scipy.ndimage import gaussian_filter
-        if 1:
-            # GET All infected cells as 1's
-            # -- infected field increases in time so have to reduce to a value of 1
-            infected = np.array(infected > 0).astype(float)
-            infected_ind = np.where(infected == 1)
-            num_infected = len(infected_ind[0])
-            pr_S_S = np.ones(infected.shape)  # Probability of remaining in S
-            std3 = int(3*self.eff_disp)  # Truncate to 3 standard deviations
-            subset = np.zeros(shape=[2*std3 + 1, 2*std3 + 1])  # init empty subset of 3 standard deviations
-            ones = np.ones(subset.shape)
-            subset[std3, std3] = 1  # set mid-point to infectious state
-            # Blur field with Gaussian kernel
-            blurred_field = self.beta * self.pre_factor * gaussian_filter(subset,
-                                                                          sigma=[self.eff_disp, self.eff_disp],
-                                                                          truncate=3.0)
-            # Iterate over each infected lattice position
-            for inf in range(num_infected):
-                # For each infected position apply gaussian filter and get Pr(S --> S)
-                row, col = infected_ind[0][inf], infected_ind[1][inf]
-                dim = pr_S_S[row - std3:row + std3 + 1, col - std3:col + std3 + 1].shape
-                # If infected tree within boundary
-                if 2*std3+1 == dim[0] and 2*std3+1 == dim[1]:
-                    pr_S_S[row-std3:row+std3+1, col-std3:col+std3+1] = \
-                        pr_S_S[row-std3:row+std3+1, col-std3:col+std3+1] * (ones - blurred_field)
-                # If infected tree not within 3 standard deviations of the boundary pass
-                else:
-                    pass
+        # GET All infected cells as 1's
+        # -- infected field increases in time so have to reduce to a value of 1
+        infected = np.array(infected > 0).astype(float)
+        infected_ind = np.where(infected == 1)
+        num_infected = len(infected_ind[0])
+        pr_S_S = np.ones(infected.shape)  # Probability of remaining in S
+        std3 = int(3*self.eff_disp)  # Truncation distance, set to 3 standard deviations
+        subset = np.zeros(shape=[2*std3 + 1, 2*std3 + 1])  # init empty subset of 3 standard deviations
+        ones = np.ones(subset.shape)
+        subset[std3, std3] = 1  # set mid-point to infectious state
+        # Blur sub-field with Gaussian kernel
+        blurred_field = self.beta * self.pre_factor * gaussian_filter(subset,
+                                                                      sigma=[self.eff_disp, self.eff_disp],
+                                                                      truncate=3.0)
+        # Iterate over each infected lattice position
+        for inf in range(num_infected):
+            # For each infected position apply gaussian filter and get Pr(S --> S)
+            row, col = infected_ind[0][inf], infected_ind[1][inf]  # row, col of infected
+            dim = pr_S_S[row - std3:row + std3 + 1, col - std3:col + std3 + 1].shape
+            # If infected tree within boundary
+            if 2*std3+1 == dim[0] and 2*std3+1 == dim[1]:
+                pr_S_S[row-std3:row+std3+1, col-std3:col+std3+1] = \
+                    pr_S_S[row-std3:row+std3+1, col-std3:col+std3+1] * (ones - blurred_field)
+            # If infected tree not within 3 standard deviations of the boundary pass
+            else:  # If infected tree is close to lattice boundary, then pass
+                # todo test if this changes percolation result!
+                pass
 
-            pr_S_I = np.ones(pr_S_S.shape) - pr_S_S  # Find probability of transitioning to infected
-            new_infected = np.where(pr_S_I > np.random.uniform(0, 1, size=infected.shape), 1, 0)  # Get new infected
-            new_infected = new_infected * susceptible  # Take away non-empty cells
-            return new_infected
+        pr_S_I = np.ones(pr_S_S.shape) - pr_S_S  # Find probability of transitioning to infected
+        new_infected = np.where(pr_S_I > np.random.uniform(0, 1, size=infected.shape), 1, 0)  # Get new infected
+        new_infected = new_infected * susceptible  # Take away non-empty cells
+        return new_infected
 
 
 class Plots(object):
@@ -257,14 +257,30 @@ def main(settings, parameters):
     while in_progress:
         if verbose:
             t_0 = time.clock()
-        new_infected = 2 * p.get_new_infected(infected=p.infected, susceptible=p.susceptible)
-        p.infected = p.infected + (p.infected > 0) + new_infected # Transition to INFECTED class, add one to existing
-        new_removed = np.array(p.infected == p.survival_times, dtype=int)  # Transition to REMOVED class
-        p.removed = (p.removed + new_removed) > 0  # Add new_removed cells to removed class
-        p.susceptible = p.susceptible * (np.logical_not(p.infected > 1))  # Remove infected from SUSCEPTIBLE class
-        p.infected = p.infected * (np.logical_not(new_removed == 1))  # remove dead trees from Infected class
-        infected_ind = np.where(p.infected > 0)
-        num_infected = len(infected_ind[0])
+
+        # --- GET field + R0 @ t+1 --- #
+        if settings["R0_mode"]:
+            # This indent prevents secondary infections from infecting other lattice positions
+            new_infected = 2 * p.get_new_infected(infected=p.infected, susceptible=p.susceptible)
+            new_removed = np.array((new_infected > 0), dtype=int)  # Transition newly infected trees straight to R class
+            p.removed = (p.removed + new_removed) > 0  # Add new_removed cells to removed class
+            p.susceptible = p.susceptible * (np.logical_not(p.removed == 1))  # Remove infected from SUSCEPTIBLE class
+            infected_ind = np.where(p.infected > 0)
+            num_infected = len(infected_ind[0])
+            num_removed = len(np.where(p.removed == 1)[0])
+
+        # --- GET fields epidemic @ t+1 --- #
+        elif not settings["R0_mode"]:
+            # This indent is the dynamics for a normal outbreak, secondary infected trees can infect others
+            new_infected = 2 * p.get_new_infected(infected=p.infected, susceptible=p.susceptible)
+            p.infected = p.infected + (p.infected > 0) + new_infected  # Transition to INFECTED class
+            new_removed = np.array(p.infected == p.survival_times, dtype=int)  # Transition to REMOVED class
+            p.removed = (p.removed + new_removed) > 0  # Add new_removed cells to removed class
+            p.susceptible = p.susceptible * (np.logical_not(p.infected > 1))  # Remove infected from SUSCEPTIBLE class
+            p.infected = p.infected * (np.logical_not(new_removed == 1))  # remove dead trees from Infected class
+            infected_ind = np.where(p.infected > 0)
+            num_infected = len(infected_ind[0])
+
         # --- IF true get plots --- #
         if dyn_plots[0]:
             if time_step % dyn_plots[1] == 0:
@@ -310,9 +326,7 @@ def main(settings, parameters):
     ts_num_infected = ts_num_infected[: time_step + 1]
     ts_max_d = ts_max_d[: time_step+1] * p.alpha
     max_d_reached = ts_max_d.max()/1000  # Maximum distance reached by the pathogen in (km)
-    num_infected = ts_num_infected[time_step]  # I @ last step
     num_removed = len(np.where(p.removed == 1)[0])  # R (-1 from initially infected)
-    mortality = (num_infected + num_removed - 1)  # I + R
     velocity = max_d_reached / (time_step+1)  # get velocity in (km/day)
     # GENERATE time series output plots over single simulation run_HPC
     if "anim" in settings["out_path"]:
@@ -345,5 +359,5 @@ def main(settings, parameters):
                 np.save('max_d_' + name, ts_max_d)
 
     # ##### COMPLETE: Individual realisation complete & metrics gathered # #####
-    return mortality, velocity, max_d_reached, time_step, p.percolation, p.population, ts_max_d
+    return num_removed, velocity, max_d_reached, time_step, p.percolation, p.population, ts_max_d
 

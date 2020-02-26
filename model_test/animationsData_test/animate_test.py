@@ -24,11 +24,11 @@ def save_nm(step):
     elif step < 1000:
         return '0' + str(step)
 
+
 path = os.getcwd() + '/raw_data/'
 save_dir = os.getcwd() + '/temp_frames/'
 files = sorted(os.listdir(os.getcwd() + '/raw_data/'))
 sim_info = files[-1]
-
 freq = int(input("Enter frame frequency : "))
 
 with open(path + sim_info) as f:
@@ -38,9 +38,9 @@ for line in content:
     line = line.split(':')
     if 'rho' == line[0]:
         rho = line[1].strip('\n')
-    if 'R0' == line[0]:
-        R0 = line[1].strip('\n')
-        R0 = str(round(float(R0), 3))
+    if 'beta' == line[0]:
+        beta = line[1].strip('\n')
+        beta = str(round(float(beta), 3))
     if 'eff_disp' == line[0]:
         sigma = line[1].strip('\n')
     if 'row_dim' == line[0]:
@@ -49,7 +49,6 @@ for line in content:
         col_dim = line[1].strip('\n')
     if 'alpha' == line[0]:
         alpha = line[1].strip('\n')
-
 
 sigma = float(sigma) * float(alpha)  # get dispersal distance in (m)
 domain_sz = str([float(row_dim) * float(alpha) / 1000, float(col_dim) * float(alpha)/1000])  # calculate physical area of domain
@@ -77,8 +76,8 @@ for i, frame in enumerate(files[:-1]):
         fig, ax = plt.subplots(figsize=(7.5, 8.5))
         title = ax.set_title('Day = ' + str(i), size=15)
         title.set_y(1.02)
-        sim_param = r'$\rho = {0}, \ R0 = {1}\ (day^{2}),\ \ \ell = {3} (m),\ \ Grid size= {4} (km) $'
-        plt.text(5, -15, sim_param.format(rho, R0, '{-1}', sigma, domain_sz), size=12)
+        sim_param = r'$\rho = {}, \ \beta = {},\ \ \ell = {} (m),\ \ Grid size= {} (km) $'
+        plt.text(5, -15, sim_param.format(rho, beta, sigma, domain_sz), size=12)
         max = 0.10
         ax.imshow(S, cmap=cmap, origin="lower", norm=norm)
         if 1:

@@ -3,6 +3,15 @@ from math import log
 import matplotlib.pyplot as plt
 import sys
 
+"""
+Created on Wed May 30 14:19:32 2018
+@author: John Holden
+
+Run an analytically found equation of reproductive ratio for our tree model and compare that over different phase
+plane values. I.e. R0(ell, beta, rho, T). The derived equation is only a function of time but properly it would also 
+be a function of space too, taking into account the dispersal kernel.
+"""
+
 beta_Arr = np.linspace(0.0001, 0.0100, 1001)
 # rho_Arr = np.linspace(0.0001, 0.10, beta_Arr.shape[0])
 ell_Arr = np.linspace(5, 30, beta_Arr.shape[0])/5

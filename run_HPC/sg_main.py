@@ -29,33 +29,47 @@ Run this extract to generate parameter space of a stochastic sub-grid sgm_model 
 1. rho (tree density)
 2. beta (infectivity) or R0
 3. dispersal distance
+
 This is done using the HPC **arc3@leeds.ac.uk** and the task_array feature. Each core gets the same set 
 of parameters to iterate over and metrics to record. Each core on the HPC will save results in the 
 output_path as 00**.npy, each core saves results in array form. Results are analysed in the 'processData/'
 folder using 'data_process' file.
+
+Settings[R0_mode]: set True, to get reproductive ratio of pathogen and tree species. Domain should be small and 
+                   R0 saved as mortality field
+                   
 """
 settings["HPC"] = mode
+settings["R0_mode"] = True  # IF true test only for number of secondary infecteds
 settings["BCD3"] = True  # IF false --> mortality sims i.e. run_HPC until all trees are dead
 settings["verbose"] = False
 # DEFINE parameters
 alpha = 5  # lattice constant m^2
 params["alpha"] = alpha
-params["domain_sz"] = [250, 250]  # to convert to (m), multiply by alpha
+params["domain_sz"] = [60, 60]  # to convert to (m), multiply by alpha, If R0 then domain can be small ~3*ell
 # save ID : unique to each core used
 if int(job_id) < 10:
     save_id = '00' + str(job_id)
 if 10 <= int(job_id) <= 100:
     save_id = '0' + str(job_id)
-# RUN Full parameter space : beta | \ell | \rho
+
 # ---- Iterate indices as  ---> [i: dispersal, j:infectivity, k:tree density]
 repeats = 10  # ensemble size = repeats * # HCP_cores
-# Rho array has different resolutions for different different points through rho-space
-rho_Arr_hig = np.linspace(0.10, 0.400, 4)
-rho_Arr_med = np.arange(0.051, 0.10, 0.010)
-rho_Arr_low = np.arange(0.0001, 0.050, 0.0001)  # Tree density range
-rho_Arr = np.hstack([rho_Arr_low, rho_Arr_med, rho_Arr_hig])
-beta_Arr = np.array([0.005, 0.0075, 0.010])  # Infectivity constant/rate
-eff_sigma_Arr = np.array([25]) / alpha  # Dispersal distance in comp units (not physical
+
+if 0:  # Sub-grid mapping format
+    # RUN partial parameter space
+    rho_Arr_hig = np.linspace(0.10, 0.400, 4)
+    rho_Arr_med = np.arange(0.051, 0.10, 0.010)
+    rho_Arr_low = np.arange(0.0001, 0.050, 0.0001)  # Tree density range stack at different resolutions
+    rho_Arr = np.hstack([rho_Arr_low, rho_Arr_med, rho_Arr_hig])
+    beta_Arr = np.array([0.005, 0.0075, 0.010])  # Infectivity constant/rate
+    eff_sigma_Arr = np.array([25]) / alpha  # Dispersal distance in comp units (not physical)
+if 1:  # Phase-plane format
+    # RUN Full parameter space
+    rho_Arr = np.array([0.025, 0.05, 0.10])
+    beta_Arr = np.linspace(0, 0.0200, 100)
+    ell_Arr = np.linspace(5, 30, len(beta_Arr))
+
 dim_ = np.array([repeats, eff_sigma_Arr.shape[0], beta_Arr.shape[0], rho_Arr.shape[0]])  # parameter space dimension
 # DEFINE data structures to save results
 mortality = np.zeros(shape=dim_)

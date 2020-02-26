@@ -1,9 +1,10 @@
 """
 Created on Wed May 30 14:19:32 2018
 @author: John Holden
-Compute either the epidemiological parameter space behaviuor over an ensemble or simulate an individual realisation.
-This code can be run_HPC on the HPC or local machine for single or ensemble-averages. To run_HPC, execute ./run_SSTML.sh in
-terminal directory.
+
+Run simulation in R0 finding mode, i.e. find the average number of secondary infected trees that result from a single
+infected individual and plot the relationship between R0 simulated and R0 predicted over a range of infectivity/beta
+values.
 """
 import os
 import sys
@@ -20,12 +21,12 @@ settings["anim"] = False
 settings["BCD3"] = False  # Percolation condition : if False, simulations will run_HPC until pathogen dies
 settings["verbose"] = False
 settings["save_figs"] = False
-settings["out_plots"] = False
+settings["out_plots"] = True
 settings["model_test"] = True
-settings["dyn_plots"] = [False, 1, True]
+settings["dyn_plots"] = [True, 1, True]
 alpha = 5  # Lattice constant in (m)
-dispersal_ = 50  # average dispersal distance in (m)
-params["rho"] = 0.10  # Typically \in [0.001, 0.100]
+dispersal_ = 25  # average dispersal distance in (m)
+params["rho"] = 0.05  # Typically \in [0.001, 0.100]
 params["l_time"] = 100  # L# ife time of disease
 params["alpha"] = alpha
 eff_dispersal = dispersal_ / alpha  # Convert the dispersal distance from km to computer units
@@ -36,8 +37,8 @@ params["eff_disp"] = eff_dispersal
 params["time_horizon"] = params["l_time"]
 # BEGIN Ensemble
 plot_ = False
-ensemble_size = 100
-beta_Arr = np.linspace(0.0001, 0.0030, 30)
+ensemble_size = 10
+beta_Arr = np.array([.00100])
 R0_Arr = np.zeros(shape=[2, beta_Arr.shape[0]])
 
 for i, beta in enumerate(beta_Arr):

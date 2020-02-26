@@ -2,19 +2,18 @@ ______Parameter settings_______
 rho:0.05
 l_time:100
 alpha:5
-row_dim:250
-col_dim:250
-eff_disp:10.0
+row_dim:100
+col_dim:100
+eff_disp:5.0
 time_horizon:100
-beta:0.0007444444444444445
-R0:2.3195007088261597
+beta:0.001
 
 ______Simulation parameters_______
-out_path:/Users/py13jh/PycharmProjects/dispersal_model/model_test/animationsData/
-anim:True
-BCD3:True
-model_test:False
-verbose:True
+out_path:/Users/py13jh/PycharmProjects/subgrid_model/model_test/animationsData/
+anim:False
+BCD3:False
+verbose:False
 save_figs:False
 out_plots:True
+model_test:True
 dyn_plots:[True, 1, True]

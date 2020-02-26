@@ -1,9 +1,9 @@
 """
 Created on Wed May 30 14:19:32 2018
 @author: John Holden
-Compute either the epidemiological parameter space behaviuor over an ensemble or simulate an individual realisation.
-This code can be run_HPC on the HPC or local machine for single or ensemble-averages. To run_HPC, execute ./run_SSTML.sh in
-terminal directory.
+
+Plot the relationship between average R0 and percolation over a variety of beta values. We expect as R0-->1, percolation
+will begin to be seen over the domain.
 """
 import os
 import sys
@@ -38,7 +38,7 @@ params["domain_sz"] = [250, 250]  # If channel [NxM] where N < M
 params["eff_disp"] = eff_dispersal
 params["time_horizon"] = 3650
 # Ensemble setup
-ensemble_size = 300
+ensemble_size = 10
 beta_Arr = np.linspace(0.0001, 0.0010, 20)
 R0_Arr = np.zeros(beta_Arr.shape[0])
 perc_Arr = np.zeros(beta_Arr.shape[0])

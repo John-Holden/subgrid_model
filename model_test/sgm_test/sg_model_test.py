@@ -338,7 +338,7 @@ def main(settings, parameters):
     max_pos = round(p.dist_map.max() * p.alpha / 1000, 4)
     num_infected = ts_num_infected[time_step]  # I @ last step
     num_removed = len(np.where(p.removed == 1)[0])  # R (-1 from initially infected)
-    mortality = (num_infected + num_removed - 1)  # I + R
+    mortality = num_removed  # I + R
     # GENERATE time series output plots over single simulation run_HPC
     if settings["out_plots"]:
         plot_cls = Plots(p.beta, p.rho)
