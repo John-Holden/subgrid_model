@@ -20,13 +20,16 @@ class Plots:
         elif field == "velocity":
             self.set_plots = {"ylabel": r"Velocity $(km/year)$", "scale": 365}
         elif field == 'max_distance_km':
-            self.set_plots = {"ylabel": "Distance reached km", "scale": 365}
+            self.set_plots = {"ylabel": "Distance reached km", "scale": 1}
         elif field == "mortality":
-            self.set_plots = {"ylabel": "# dead", "scale": 365}
+            if self.settings["R0_mode"]:
+                self.set_plots = {"ylabel": r"$R_0$", "scale": 1}
+            else:
+                self.set_plots = {"ylabel": "# dead", "scale": 1}
         elif field == "mortality_ratio":
-            self.set_plots = {"ylabel": r"mortality/population - $\chi$", "scale": 365}
+            self.set_plots = {"ylabel": r"mortality/population - $\chi$",  "scale": 1}
         elif field == 'run_time':
-            self.set_plots = {"ylabel": "# days elapsed", "scale": 365}
+            self.set_plots = {"ylabel": "# days elapsed",  "scale": 1}
 
         self.rho_Arr = np.load(data_directory + '/_sim-info/rho_Arr.npy')
         self.beta_Arr = np.load(data_directory + '/_sim-info/beta_Arr.npy')
@@ -55,10 +58,8 @@ class Plots:
         """
         dat1 = np.load(os.getcwd()+'/beta-perc-line_ell50_0_rho0_05.npy')
         dat2 = np.load(os.getcwd()+'/beta-perc-line_ell50_0_rho0_025.npy')
-
         plt.plot(self.beta_Arr, dat1, label=r'$\rho = 0.050$, $\ell = 50$')
         plt.plot(self.beta_Arr, dat2, label=r'$\beta = 0.025$, $\ell = 50$')
-
         plt.xlabel(r'Tree density $\rho$', size=12)
         plt.ylabel(self.set_plots["ylabel"], size=12)
         plt.grid(alpha=0.5)
@@ -68,8 +69,8 @@ class Plots:
         return
 
     def plot_rho_line(self, ensemble_data, title, saveFig, saveData):
-        """Plot a line of beta values against an x axis rhos against for different values
-        of dispersal
+        """
+        Plot figures for different values of ell plot rho x-axis against field values for different beta values
         :param ensemble_data: HPC generated data
         :param title:
         :param saveFig: [Bool, '...']
@@ -78,23 +79,22 @@ class Plots:
         """
         if self.field == "velocity":
             ensemble_data = ensemble_data * 365  # km/year
-
         for i, ell in enumerate(ensemble_data):
             fig, ax = plt.subplots(figsize=(7.5, 7))
             for j, R0_vs_rho in enumerate(ell):
                 ax.plot(self.rho_Arr, R0_vs_rho, label=r'$\beta = $ {}'.format(self.beta_Arr[j]))
                 ax.scatter(self.rho_Arr, R0_vs_rho, s=10)
-
             plt.xticks(np.round(np.linspace(0, self.rho_Arr[-1], 21), 3), rotation=60)
             ax.set_ylabel(self.set_plots['ylabel'], size=14)
             ax.set_xlabel(r'Tree density $\rho$', size=14)
             ax.grid(True)
+            ax.set_xlim(0, 0.05)
+            ax.set_ylim(0, 10)
             ax.axvline(x=0.050, color='r', alpha=0.50, linestyle='--')
             ax.axvspan(0.001, 0.050, alpha=0.15, color='grey', label=r'Lower $\rho$ regime')
             ax.set_title(title + r"$\ell = $" + str(self.disp_Arr[i]) + ' (m)', size=15)
             if saveFig[0]:
                 plt.savefig(os.getcwd() + '/' + 'ens-' + self.field + saveFig[1])
-
             plt.legend()
             plt.show()
 
@@ -107,12 +107,20 @@ class Plots:
         return
 
     def plot_beta_line(self, ensemble_data, title, saveFig, saveData):
-        i=0
+        """
+        Plot figures for one value of rho, beta x-axis against the field values for different lines in ell
+        :param ensemble_data:
+        :param title:
+        :param saveFig:
+        :param saveData:
+        :return:
+        """
+        i = 0
         colors = ['C0', 'C1', 'C2']
         for rho in range(ensemble_data.shape[2]):
             fig, ax = plt.subplots()
-            rho_dat = ensemble_data[:,:,rho]
-            j=0
+            rho_dat = ensemble_data[:, :, rho]
+            j = 0
             for ell in rho_dat:
                 # np.save('beta-perc-line_ell{}_rho{}'.format(str(self.disp_Arr[j]).replace('.', '_'),
                 #                                            str(self.rho_Arr[i]).replace('.', '_')), ell)
@@ -122,21 +130,19 @@ class Plots:
                 R0_1 = R0_1[0][0]
                 ax.plot([self.beta_Arr[R0_1], self.beta_Arr[R0_1]], [0, 1], c=colors[j], linestyle='--', alpha=0.5,
                         label=r"$R_0(\ell, \rho, \beta, T) \approx 1 $".format(self.disp_Arr[j]))
-                j+=1
-
+                j += 1
             ax.set_xlabel(r"Infectivity $\beta$",size=12)
             ax.set_ylabel(r"Percolation Pr", size=12)
             ax.set_title(r"$\rho = $ {}".format(self.rho_Arr[rho]))
             plt.legend()
             plt.savefig('perc-R-{}'.format(i))
             plt.show()
-            i+=1
+            i += 1
 
-    def plot_2D(self, ensemble_data, saveFig, saveData):
+    def plot_2d(self, ensemble_data, saveFig, saveData):
         """
         Plot the 2D average i.e. field values z axis (shown as color) dispersal against beta as a
         function of tree density.
-
         :param ensemble_data:
         :param saveFig:
         :param saveData:
@@ -144,36 +150,33 @@ class Plots:
         """
         for i in range(ensemble_data.shape[2]):
             fig, ax = plt.subplots()
-            rho = self.rho_Arr[i]
-            extent = [0, 0.010, self.disp_Arr[0], self.disp_Arr[-1]]
+            extent = [self.beta_Arr[0], self.beta_Arr[-1], self.disp_Arr[0], self.disp_Arr[-1]]
             data = ensemble_data[:, :, i] * self.set_plots["scale"]
             data = np.where(data == 0, np.nan, data)
             im = ax.imshow(data, origin='lower', extent=extent)
             ax.set_ylabel(r"$\ell$ (m)", size=14)
             ax.set_xlabel(r"Infectivity $\beta$", size=14)
             ax.set_aspect("auto")
-            ax.set_title(r"$\rho = {}$".format(rho))
+            ax.set_title(r"$\rho = {}$".format(self.rho_Arr[i]))
+            ax.tick_params(axis='x', rotation=70)
             cbar = plt.colorbar(im)
-            cbar.set_label(self.set_plots["ylabel"], size=10)
+            cbar.set_label(self.set_plots["ylabel"], size=15)
             if saveFig[0]:
-                plt.savefig(os.getcwd()+'/2D-pspace-'+self.field + '-' + str(i))
-            if i ==0:
-                plt.show()
-            else:
-                plt.close()
+                plt.savefig(os.getcwd()+'/2D-pspace-' + self.field + '-' + str(i))
+            plt.show()
         return
 
     def get_ensemble(self, results_name, saveDat, show_individual):
         """
-        Get the ensemle averge from HPC stored directory. Sum over different hpc cores and
+        Get the ensemble average from HPC stored directory. Sum over different hpc cores and
         in-core number of repeats.
 
-        :param results_name: directory to shape load and process into a npy file
         :param saveDat: bool, if True save to file
+        :param results_name: directory to shape load and process into a npy file
         :return: arr ensemble_Av, array of simulation data
         """
         data_path = os.getcwd() + '/' + results_name + '/' + self.field
-        file_list = sorted(os.listdir(data_path))
+        file_list = sorted(os.listdir(data_path))[:10]
         dim_ = np.load(data_path + '/' + file_list[0]).shape[1:4]  # drop extra dimension for repeats
         ensemble_data = np.zeros(dim_)
         hpc_core_repeat = np.load(data_path + '/' + file_list[0]).shape[0]
@@ -192,13 +195,13 @@ if __name__ == '__main__':
     fields = ['max_distance_km', 'mortality', 'mortality_ratio', 'percolation', 'run_time', 'velocity']
     # data_dir = '06-02-2020-HPC-param-sweep-100ell-vs-100beta-ens-300'
     # data_dir = '07-02-2020-HPC-param-sweep-100ell-vs-100beta-ens-300-small'
-    # data_dir = '12-02-2020-HPC-HresLine-mapping'
-    data_dir = '13-02-2020-HPC-R0-v-perc.png-line'
-    field_ = fields[3]
+    # data_dir = '13-02-2020-HPC-R0-v-perc.png-line'
+    data_dir = '28-02-2020-HPC-map-line-test'
+    field_ = fields[1]
     # Plot data
     plots = Plots(data_dir, field_)
     ensemble_Av = plots.get_ensemble(results_name=data_dir, saveDat=[False, '-delMe'], show_individual=False)
-    plots.plot_beta_line(ensemble_Av, title='', saveFig=[True, ''], saveData=[True, ''])
-    # plots.plot_2D(ensemble_Av, saveFig=[True, ''], saveData=False)
+    # plots.plot_rho_line(ensemble_Av, title='', saveFig=[False, ''], saveData=[False, ''])
+    # plots.plot_2d(ensemble_Av, saveFig=[True, ''], saveData=False)
 
 # End

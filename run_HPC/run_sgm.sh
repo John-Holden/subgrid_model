@@ -1,19 +1,12 @@
 #!/bin/bash
 
-# Execute from terminal to run the model, either to simulate indiviual realisations locally or ensemble simulations,
+# Execute me from terminal to run the sub-grid model, simulate me in multiple realisations thus forming an ensemble.
+# Run: 'qsub run_sgm.sh' on leeds HPC to use a task array of n cores.
 # either on the HPC or locally.
 
-###########__________Parameters and settings__________#############
-# hpc_switch | choose between hpc or local usage
-# sim_name | input a string to append to the output file to identify simulation runs
-# data_type | currently set to lattice i.e. simple square homogeneous lattice 
-
-hpc_switch=1
-
 ###########__________Run script__________#############
-if [ "$hpc_switch" == 1 ]
- then
 ################ Hpc machine ################
+
 module load python/3.6.5
 module load python-libs/3.1.0
 date_time=$(date '+%d-%m-%Y %H:%M:%S')
@@ -25,20 +18,9 @@ date_time=$(date '+%d-%m-%Y %H:%M:%S')
 mode="HPC"
 sim_type="-map-line"
 sim_name="-test"
+id=0
 
 python3 mkdir.py $date_time $mode $sim_type $sim_name
-python3 sg_main.py $SGE_TASK_ID $date_time $data_type $mode $sim_type $sim_name
-elif [ "$hpc_switch" == 0 ]
- then
+python3 sg_main.py $id $date_time $data_type $mode $sim_type $sim_name
 
-################ Local machine ###############
-job_id=25
-date_time=$(date '+%d-%m-%Y %H:%M:%S')
-mode="LCL"
-sim_type="-anim"  # LCL --> two sim_types : ['-anim', '-ens']
-sim_name="-delMe"
-python3 mkdir.py  $date_time $data_type $mode $sim_type $sim_name
-python3 sg_main.py $job_id $date_time $data_type $mode $sim_type $sim_name
-
-fi
 echo "Simulations Finished"

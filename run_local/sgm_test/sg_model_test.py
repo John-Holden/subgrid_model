@@ -156,7 +156,6 @@ class SimInit(object):
         self.time_f = parameters["time_horizon"]  # the time-epoch BCD, simulation stops if runtime exceeds this
         self.survival_times = parameters['l_time'] + 1 * np.ones(dim)  # the survival time of each lattice point
         self.pre_factor = 2 * np.pi * (parameters["eff_disp"]**2)  # the dispersal normalisation constant
-        # self.beta = self.R0 / self.pre_factor  # The probability field
         self.beta = parameters["beta"]
         try:
             # Check beta defines a probability \in [0, 1]
@@ -198,38 +197,39 @@ class SimInit(object):
         :param susceptible: array-like dtype=int susceptible field, values taken \in [0, 1]
         :return: array-like, the NEW-INFECTED cells in the domain
         """
-        from scipy.ndimage import gaussian_filter
-        # GET All infected cells as 1's
-        # -- infected field increases in time so have to reduce to a value of 1
-        infected = np.array(infected > 0).astype(float)
-        infected_ind = np.where(infected == 1)
-        num_infected = len(infected_ind[0])
-        pr_S_S = np.ones(infected.shape)  # Probability of remaining in S
-        std3 = int(3*self.eff_disp)  # Truncate to 3 standard deviations
-        subset = np.zeros(shape=[2*std3 + 1, 2*std3 + 1])  # init empty subset of 3 standard deviations
-        ones = np.ones(subset.shape)
-        subset[std3, std3] = 1  # set mid-point to infectious state
-        # Blur field with Gaussian kernel
-        blurred_field = self.beta * self.pre_factor * gaussian_filter(subset,
-                                                                      sigma=[self.eff_disp, self.eff_disp],
-                                                                      truncate=3.0)
-        # Iterate over each infected lattice position
-        for inf in range(num_infected):
-            # For each infected position apply gaussian filter and get Pr(S --> S)
-            row, col = infected_ind[0][inf], infected_ind[1][inf]
-            dim = pr_S_S[row - std3:row + std3 + 1, col - std3:col + std3 + 1].shape
-            # If infected tree within boundary
-            if 2*std3+1 == dim[0] and 2*std3+1 == dim[1]:
-                pr_S_S[row-std3:row+std3+1, col-std3:col+std3+1] = \
-                    pr_S_S[row-std3:row+std3+1, col-std3:col+std3+1] * (ones - blurred_field)
-            # If infected tree not within 3 standard deviations of the boundary pass
-            else:
-                pass
+        if 1:
+            from scipy.ndimage import gaussian_filter
+            # GET All infected cells as 1's
+            # -- infected field increases in time so have to reduce to a value of 1
+            infected = np.array(infected > 0).astype(float)
+            infected_ind = np.where(infected == 1)
+            num_infected = len(infected_ind[0])
+            pr_S_S = np.ones(infected.shape)  # Probability of remaining in S
+            std3 = int(3*self.eff_disp)  # Truncate to 3 standard deviations
+            subset = np.zeros(shape=[2*std3 + 1, 2*std3 + 1])  # init empty subset of 3 standard deviations
+            ones = np.ones(subset.shape)
+            subset[std3, std3] = 1  # set mid-point to infectious state
+            # Blur field with Gaussian kernel
+            blurred_field = self.beta * self.pre_factor * gaussian_filter(subset,
+                                                                          sigma=[self.eff_disp, self.eff_disp],
+                                                                          truncate=3.0)
+            # Iterate over each infected lattice position
+            for inf in range(num_infected):
+                # For each infected position apply gaussian filter and get Pr(S --> S)
+                row, col = infected_ind[0][inf], infected_ind[1][inf]
+                dim = pr_S_S[row - std3:row + std3 + 1, col - std3:col + std3 + 1].shape
+                # If infected tree within boundary
+                if 2*std3+1 == dim[0] and 2*std3+1 == dim[1]:
+                    pr_S_S[row-std3:row+std3+1, col-std3:col+std3+1] = \
+                        pr_S_S[row-std3:row+std3+1, col-std3:col+std3+1] * (ones - blurred_field)
+                # If infected tree not within 3 standard deviations of the boundary pass
+                else:
+                    pass
 
-        pr_S_I = np.ones(pr_S_S.shape) - pr_S_S  # Find probability of transitioning to infected
-        new_infected = np.where(pr_S_I > np.random.uniform(0, 1, size=infected.shape), 1, 0)  # Get new infected
-        new_infected = new_infected * susceptible  # Take away non-empty cells
-        return new_infected
+            pr_S_I = np.ones(pr_S_S.shape) - pr_S_S  # Find probability of transitioning to infected
+            new_infected = np.where(pr_S_I > np.random.uniform(0, 1, size=infected.shape), 1, 0)  # Get new infected
+            new_infected = new_infected * susceptible  # Take away non-empty cells
+            return new_infected
 
 
 def main(settings, parameters):
@@ -252,7 +252,7 @@ def main(settings, parameters):
     plts = Plots(p.rho, p.beta)
     ts_max_d, ts_num_infected, t_debug = [p.max_d, p.num_infected_arr, p.time_debug]  # arrays to record time-series
     ts_num_removed = np.zeros(p.time_f)
-    in_progress, time_step, num_infected = [True, 0, 1]
+    in_progress, time_step, num_infected, num_removed = [True, 0, 1, 0]
     verbose = settings["verbose"]  # control output print-to-screens
     dyn_plots = settings["dyn_plots"]  # control settings to 'dynamic-plots' .png files are generated and saved
     # ________________Run Algorithm________________ #
@@ -260,7 +260,8 @@ def main(settings, parameters):
     if verbose:
         dist = round(ts_max_d.max() * p.alpha, 3)
         print("...START...")
-        print("max d = {} (m) | Infected = {}".format(dist, num_infected))
+        # print("max d = {} (m) | Infected = {}".format(dist, num_infected))
+        print("| removed = {}".format(dist, num_removed))
 
     while in_progress:
         if verbose:
@@ -269,22 +270,32 @@ def main(settings, parameters):
         if dyn_plots[0]:
             if time_step % dyn_plots[1] == 0:
                 t = plts.save_label(step=time_step)
-                save_path = os.getcwd() + '/animationsData_debug/raw_data/'
+                save_path = os.getcwd() + '/animationsData_test/raw_data/'
                 np.save(save_path + t, np.array([p.susceptible, p.infected, p.removed]))
-        # --- GET fields @ t+1 --- #
-        new_infected = 2 * p.get_new_infected(infected=p.infected, susceptible=p.susceptible)
-        p.infected = p.infected + (p.infected > 0) + new_infected  # Transition to INFECTED class, add one to existing
-        new_removed = np.array(p.infected == p.survival_times, dtype=int)  # Transition to REMOVED class
-        p.removed = (p.removed + new_removed) > 0  # Add new_removed cells to removed class
-        p.susceptible = p.susceptible * (np.logical_not(p.infected > 1))  # Remove infected from SUSCEPTIBLE class
-        p.infected = p.infected * (np.logical_not(new_removed == 1))  # remove dead trees from Infected class
-        infected_ind = np.where(p.infected > 0)
-        num_infected = len(infected_ind[0])
-        num_removed = len(np.where(p.removed == 1)[0])
+
+        # --- GET field + R0 @ t+1 --- #
+        if settings["run_local"]:
+            new_infected = 2 * p.get_new_infected(infected=p.infected, susceptible=p.susceptible)
+            new_removed = np.array((new_infected > 0), dtype=int)  # Transition newly infected trees straight to R class
+            p.removed = (p.removed + new_removed) > 0  # Add new_removed cells to removed class
+            p.susceptible = p.susceptible * (np.logical_not(p.removed == 1))  # Remove infected from SUSCEPTIBLE class
+            infected_ind = np.where(p.infected > 0)
+            num_infected = len(infected_ind[0])
+            num_removed = len(np.where(p.removed == 1)[0])
+        elif not settings["run_local"]:
+            # --- GET fields epidemic @ t+1 --- #
+            new_infected = 2 * p.get_new_infected(infected=p.infected, susceptible=p.susceptible)
+            p.infected = p.infected + (p.infected > 0) + new_infected  # Transition to INFECTED class, add one to existing
+            new_removed = np.array(p.infected == p.survival_times, dtype=int)  # Transition to REMOVED class
+            p.removed = (p.removed + new_removed) > 0  # Add new_removed cells to removed class
+            p.susceptible = p.susceptible * (np.logical_not(p.infected > 1))  # Remove infected from SUSCEPTIBLE class
+            p.infected = p.infected * (np.logical_not(new_removed == 1))  # remove dead trees from Infected class
+            infected_ind = np.where(p.infected > 0)
+            num_infected = len(infected_ind[0])
+            num_removed = len(np.where(p.removed == 1)[0])
 
         if verbose:  # Print out step max distance reached and #Infecteds
-            dist = round(ts_max_d.max() * p.alpha, 3)
-            print("  Step: {}  | max d = {} (m) | #Infected = {}".format(time_step, dist, num_infected))
+            print("Step: {}| #removed = {}".format(time_step, num_removed))
         # --- IF true get plots --- #
 
         # --- CHECK boundary conditions (BCDs) --- #
@@ -313,59 +324,40 @@ def main(settings, parameters):
                 if max_d > (p.dim[1]/2 - 25):
                     p.percolation = 1
                     break
-
-        if verbose:
-            t_f = time.clock()
-            t_debug[time_step] = t_f - t_0
-            print("  Time elapsed in loop: {}".format(round(t_f - t_0, 4)))
         time_step += 1
         # __________STEP ITERATION COMPLETE_________ #
     # ________________END ALGORITHM________________ #
-    print("...DONE...")
+    if verbose:
+        print("...DONE...")
     ts_num_infected = ts_num_infected[: time_step + 1]
     ts_num_removed = ts_num_removed[: time_step+1]  # I @ last step
     ts_max_d = ts_max_d[: time_step+1] * p.alpha
     max_d_reached = ts_max_d.max()  # Maximum distance reached by the pathogen
     max_d_reached = round(max_d_reached / 1000, 4)  # --> convert to km
     velocity = max_d_reached / (time_step + 1)  # Velocity in units km/day
-
     max_pos = round(p.dist_map.max() * p.alpha / 1000, 4)
-    num_infected = ts_num_infected[time_step]  # I @ last step
-
     num_removed = len(np.where(p.removed == 1)[0])  # R (-1 from initially infected)
-    mortality = (num_infected + num_removed - 1)  # I + R
     # GENERATE time series output plots over single simulation run_HPC
     if settings["out_plots"]:
         plot_cls = Plots(p.beta, p.rho)
         plot_cls.save_settings(parameters, settings, save_path)  # Plots module contains plotting functions
-        if settings["plt_tseries"]:
-            print('---> Max d reached = {} (km), max d possible = {} (km)'.format(max_d_reached, max_pos))
-            # Plot removed per step
-            label = {'title': "Removed / step", 'xlabel': 'days', 'ylabel': r'$R_0$(t)'}
-            plot_cls.plot_tseries(metric=np.gradient(ts_num_removed), labels=label, fit=False, saves_=[False, None])
-            # Plot num_removed metric
-            label = {'title': "Total removed = {}".format(mortality), 'xlabel': 'days', 'ylabel': r'# removed'}
-            plot_cls.plot_tseries(metric=ts_num_removed, labels=label, fit=False, saves_=[False, None])
-            # Plot max d metric
-            # label = {'title': "max d distance", 'xlabel': 'days', 'ylabel': 'distance (km)'}
-            # plot_cls.plot_tseries(metric=ts_max_d, labels=label, fit=False, saves_=[False, None])
-            # Plot number of infected (SIR)
-            # label = {'title': "num infected", 'xlabel': 'days', 'ylabel': '# trees'}
-            # plot_cls.plot_tseries(metric=ts_num_infected, labels=label, fit=False, saves_=[False, 'num_inf_0'])
-            # Plot physical computer runtime stats
-            # t_debug = t_debug[:time_step]
-            # label = {'title': "computer runtime", 'xlabel': 'step', 'ylabel': 'physical runtime'}
-            # plot_cls.plot_tseries(metric=t_debug, labels=label, fit=False, saves_=[False, 'rt_0'])
-            # IF True, save time-series data to file
-            save_tseries = False
-            if save_tseries:
-                beta = round(parameters["beta"], 2)
-                name = 'b_' + str(beta).replace('.', '-') + '_r_' + str(parameters["rho"]).replace('.', '-') + \
-                       '_L_' + str(parameters["eff_disp"]).replace('.', '-')
-                np.save('max_d_' + name, ts_max_d)
+        print('---> Max d reached = {} (km), max d possible = {} (km)'.format(max_d_reached, max_pos))
+        # Plot removed per step
+        label = {'title': "Removed / step", 'xlabel': 'days', 'ylabel': r'$R_0$(t)'}
+        plot_cls.plot_tseries(metric=np.gradient(ts_num_removed), labels=label, fit=False, saves_=[False, None])
+        # Plot num_removed metric
+        label = {'title': "Total removed = {}".format(num_removed), 'xlabel': 'days', 'ylabel': r'# removed'}
+        plot_cls.plot_tseries(metric=ts_num_removed, labels=label, fit=False, saves_=[False, None])
+
+        save_tseries = False
+        if save_tseries:
+            beta = round(parameters["beta"], 2)
+            name = 'b_' + str(beta).replace('.', '-') + '_r_' + str(parameters["rho"]).replace('.', '-') + \
+                   '_L_' + str(parameters["eff_disp"]).replace('.', '-')
+            np.save('max_d_' + name, ts_max_d)
 
     # ##### COMPLETE: Individual realisation complete & metrics gathered # #####
-    return mortality, velocity, max_d_reached, time_step, p.percolation, p.population, ts_max_d
+    return num_removed, velocity, max_d_reached, time_step, p.percolation, p.population, ts_max_d, ts_num_removed
 
 
 if __name__ == "__main__":
