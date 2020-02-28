@@ -16,11 +16,10 @@ date_time=$(date '+%d-%m-%Y %H:%M:%S')
 #$ -t 1-100
 
 mode="HPC"
-sim_type="-map-line"
-sim_name="-test"
-id=0
+sim_type="-2D-phase"
+sim_name="-R0"
 
 python3 mkdir.py $date_time $mode $sim_type $sim_name
-python3 sg_main.py $id $date_time $data_type $mode $sim_type $sim_name
+python3 sg_main.py $SGE_TASK_ID $date_time $data_type $mode $sim_type $sim_name
 
 echo "Simulations Finished"
