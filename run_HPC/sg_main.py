@@ -62,7 +62,7 @@ if 1:  # Phase-plane format
     eff_sigma_Arr = np.linspace(5, 30, len(beta_Arr)) / alpha
 
 settings["R0_mode"] = True
-repeats = 100  # ensemble size = repeats * # HCP_cores
+repeats = 10  # ensemble size = repeats * # HCP_cores
 dim_ = np.array([repeats, eff_sigma_Arr.shape[0], beta_Arr.shape[0], rho_Arr.shape[0]])  # parameter space dimension
 # DEFINE data structures to save results
 mortality = np.zeros(shape=dim_)
@@ -93,14 +93,13 @@ for r in range(repeats):  # ITERATE repeats
                 percolation_pr[r, i, j, k] = percolation_
                 mortality_ratio[r, i, j, k] = mortality_ / population_sz
 
-    # save results as multi-dimensional arrays
-    np.save(output_path + "/run_time/" + save_id, run_times)
-    np.save(output_path + "/mortality/" + save_id, mortality)
-    np.save(output_path + "/velocity/" + save_id, velocities)  # saved in km/day
-    np.save(output_path + "/percolation/" + save_id, percolation_pr)
-    np.save(output_path + "/max_distance_km/" + save_id, max_distances)  # saved in km
-    np.save(output_path + "/mortality_ratio/" + save_id, mortality_ratio)
-
+# save results as multi-dimensional arrays
+np.save(output_path + "/run_time/" + save_id, run_times)
+np.save(output_path + "/mortality/" + save_id, mortality)
+np.save(output_path + "/velocity/" + save_id, velocities)  # saved in km/day
+np.save(output_path + "/percolation/" + save_id, percolation_pr)
+np.save(output_path + "/max_distance_km/" + save_id, max_distances)  # saved in km
+np.save(output_path + "/mortality_ratio/" + save_id, mortality_ratio)
 # #### End param sweep # ####
 tf = time.process_time() - t0
 tf = np.float64(tf / 60)
