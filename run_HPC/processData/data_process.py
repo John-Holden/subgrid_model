@@ -9,10 +9,8 @@ class Plots:
     def __init__(self, data_directory, field):
         with open(os.getcwd() + '/' + data_directory + '/_sim-info/sim-parameters.pickle', 'rb') as handle:
             self.params = pickle.load(handle)
-
         with open(data_directory + '/_sim-info/sim-settings.pickle', 'rb') as handle:
             self.settings = pickle.load(handle)
-
         self.field = field
         # Set axis
         if field == "percolation":
@@ -82,16 +80,22 @@ class Plots:
         for i, ell in enumerate(ensemble_data):
             fig, ax = plt.subplots(figsize=(7.5, 7))
             for j, R0_vs_rho in enumerate(ell):
-                ax.plot(self.rho_Arr, R0_vs_rho, label=r'$\beta = $ {}'.format(self.beta_Arr[j]))
-                ax.scatter(self.rho_Arr, R0_vs_rho, s=10)
+                ax.plot(self.rho_Arr, R0_vs_rho)
+                ax.scatter(self.rho_Arr, R0_vs_rho, s=10, label=r'$\beta = $ {}'.format(self.beta_Arr[j]))
+                # rho = self.rho_Arr[np.where(R0_vs_rho > 0.99)[0][0]]
+                # ax.plot([rho, rho], [0, 1], c='r', label=r'@ 99% perc: $\rho = ${}'.format(round(rho, 3)))
+                # rho = self.rho_Arr[np.where(R0_vs_rho > 0.50)[0][0]]
+                # ax.plot([rho, rho], [0, 1], c='g', label=r'@ 50% perc: $\rho = ${}'.format(round(rho, 3)))
+                rho = self.rho_Arr[np.where(R0_vs_rho > 0)[0][0]]
+                ax.plot([rho, rho], [0, 1], c='C'+str(j), label=r'@ >0% perc: $\rho = ${}'.format(round(rho, 3)))
+
             plt.xticks(np.round(np.linspace(0, self.rho_Arr[-1], 21), 3), rotation=60)
             ax.set_ylabel(self.set_plots['ylabel'], size=14)
             ax.set_xlabel(r'Tree density $\rho$', size=14)
             ax.grid(True)
-            ax.set_xlim(0, 0.05)
-            ax.set_ylim(0, 10)
-            ax.axvline(x=0.050, color='r', alpha=0.50, linestyle='--')
-            ax.axvspan(0.001, 0.050, alpha=0.15, color='grey', label=r'Lower $\rho$ regime')
+            ax.set_xlim(0, 0.10)
+            ax.set_ylim(0, 1.1)
+            # ax.axvspan(0.001, 0.050, alpha=0.15, color='grey', label=r'Lower $\rho$ regime')
             ax.set_title(title + r"$\ell = $" + str(self.disp_Arr[i]) + ' (m)', size=15)
             if saveFig[0]:
                 plt.savefig(os.getcwd() + '/' + 'ens-' + self.field + saveFig[1])
@@ -170,7 +174,6 @@ class Plots:
         """
         Get the ensemble average from HPC stored directory. Sum over different hpc cores and
         in-core number of repeats.
-
         :param saveDat: bool, if True save to file
         :param results_name: directory to shape load and process into a npy file
         :return: arr ensemble_Av, array of simulation data
@@ -185,7 +188,7 @@ class Plots:
             hpc_core_result = np.load(data_path + '/' + file)
             for repeat in hpc_core_result:  # iterate through repeated results get sum for each file
                 ensemble_data = ensemble_data + repeat
-        print((hpc_core_repeat * len(file_list)))
+
         ensemble_data = ensemble_data / (hpc_core_repeat * len(file_list))  # averaged
         return ensemble_data
 
@@ -194,12 +197,13 @@ if __name__ == '__main__':
     # Data fields saved
     fields = ['max_distance_km', 'mortality', 'mortality_ratio', 'percolation', 'run_time', 'velocity']
     # data_dir = '07-02-2020-HPC-param-sweep-100ell-vs-100beta-ens-300-small'
-    data_dir = '28-02-2020-HPC-2D-phase-R0'
+    # data_dir = '28-02-2020-HPC-2D-phase-R0'
+    data_dir = '02-03-2020-HPC-1D-sg-mapping'
     field_ = fields[3]
     # Plot data
     plots = Plots(data_dir, field_)
     ensemble_Av = plots.get_ensemble(results_name=data_dir, saveDat=[False, '-delMe'], show_individual=False)
-    # plots.plot_rho_line(ensemble_Av, title='', saveFig=[False, ''], saveData=[False, ''])
-    plots.plot_2d(ensemble_Av, saveFig=[False, ''], saveData=False)
+    plots.plot_rho_line(ensemble_Av, title='', saveFig=[True, '2'], saveData=[False, ''])
+    # plots.plot_2d(ensemble_Av, saveFig=[False, ''], saveData=False)
 
 # End

@@ -39,23 +39,6 @@ class Plots(object):
             for setting in settings:
                 info_file.write(setting + ':' + str(settings[setting]) + '\n')
 
-    def save_label(self, step):
-        """
-        Use this to save under in %4d format - to be used in animate.sh
-        :param step: current time-step of the simulation
-        :return:
-        """
-        if step < 10:
-            return '0000' + str(step)
-        elif step < 100:
-            return '000' + str(step)
-        elif step < 1000:
-            return '00' + str(step)
-        elif step < 10000:
-            return '0'+str(step)
-        elif step < 100000:
-            return str(step)
-
     def plot_tseries(self, metric, labels, fit, saves_):
         import matplotlib.pyplot as plt
         """
@@ -74,6 +57,7 @@ class Plots(object):
         if fit:
             # Fit a function to the metric
             from scipy.optimize import curve_fit
+
             def exp(x, b):
                 # use a simple exponential
                 return np.exp(b * x)
@@ -89,34 +73,30 @@ class Plots(object):
         if "log" in labels["ylabel"]:
             ax.set_yscale('log')
 
-        print(labels["title"])
-        if labels["title"] == "computer runtime":
-            ax.set_title(labels["title"] + ": Tot elapsed = {}".format(round(np.sum(metric), 4)))
-        else:
-            ax.set_title(labels["title"])
-
         ax.set_xlabel(labels["xlabel"])
         ax.set_ylabel(labels["ylabel"])
-
+        ax.set_title(labels["title"])
         plt.legend()
         plt.grid()
         if save:
             plt.savefig(save_name)
         plt.show()
+        return
 
 
-class SimInit(object):
-    def __init__(self, parameters):
+class SubGrid(object):
+    def __init__(self, parameters, settings):
         """
         :param parameters: dictionary, keys are strings or parameter names, values are parameter values
-        :param domain: array-like, this is the lattice-domain of size n x n, full of floats drawn from a Poison process
         """
         np.random.seed()
         dim = parameters["domain_sz"]  # Dimension of domain
         tree_dist = np.zeros(shape=(dim[0], dim[1]))
         population_size = int(parameters["rho"] * dim[0] * dim[1])  # Theoretical tree population size
         p = 0
-        while p < population_size:  # Initialise tree population
+        # ------ Initialise tree population ------ #
+        while p < population_size:
+            # Seed population to exact population site-by-site
             rand_x = np.random.randint(0, dim[0])
             rand_y = np.random.randint(0, dim[1])
             if tree_dist[rand_x, rand_y] == 1:
@@ -139,49 +119,81 @@ class SimInit(object):
                 print("Error dim[MxN] = {}, M !< N.".format(dim))
                 sys.exit("Exiting...")
 
-        epi_cx, epi_cy = int(dim[0]/2), int(dim[1]/2)  # Set epicenter
-        infected = np.zeros(dim)       # Infected field
-        tree_dist[0], tree_dist[-1], tree_dist[:, 0], tree_dist[:, -1] = [0, 0, 0, 0]  # Set boundary conditions
-        # infected[epi_cx, epi_cy] = 1   # Set epicenters to infected status
-        # tree_dist[epi_cx, epi_cy] = 0  # Remove susceptible trees at epicenter
-        infected[epi_cx-3:epi_cx+3, epi_cy-3:epi_cy+3] = 1
-        tree_dist[epi_cx-3:epi_cx+3, epi_cy-3:epi_cy+3] = 0  # Remove susceptible trees at epicenter
-        epi_c = [epi_cx, epi_cy]
+        # ------ Set simulation parameters & Data structures ------ #
+        epi_cx, epi_cy = int(dim[0]/2), int(dim[1]/2)  # epicenter
+        infected = np.zeros(dim)  # Infected field
+        tree_dist[0], tree_dist[-1], tree_dist[:, 0], tree_dist[:, -1] = [0, 0, 0, 0]  # Boundary conditions
         self.dim = dim  # dimension of lattice
-        self.epi_c = epi_c  # epicenter locations
-        self.infected = infected  # array containing the locations of infected trees
+        self.epi_c = [epi_cx, epi_cy]  # epicenter locations
         self.population = population_size  # the number of trees in the population at T=0
         self.removed = np.zeros(dim)  # the removed field storing locations of all dead trees
-        self.susceptible = tree_dist  # the susceptible field containing information of all healthy trees
         self.rho = parameters['rho']  # the Tree density
         self.eff_disp = parameters["eff_disp"]  # the 'effective' dispersal distance in computer unit
         self.time_f = parameters["time_horizon"]  # the time-epoch BCD, simulation stops if runtime exceeds this
         self.survival_times = parameters['l_time'] + 1 * np.ones(dim)  # the survival time of each lattice point
         self.pre_factor = 2 * np.pi * (parameters["eff_disp"]**2)  # the dispersal normalisation constant
-        self.beta = parameters["beta"]
+        self.beta = parameters["beta"]  # The infectivity rate in units day^-1
+        self.alpha = parameters["alpha"]  # Lattice parameter
         try:
-            # Check beta defines a probability \in [0, 1]
-            assert self.beta <= 1
+            # Check beta satisfies a probability \in [0, 1]
+            assert self.beta < 1
         except:
             print(self.eff_disp, ' disp factor')
             print(self.pre_factor, ' pre factor')
             print(self.beta, ' beta')
             print("Unphysical probability")
             sys.exit("error...")
-        # INIT distance matrix - records pathogens evolution in (m)
-        x_rows, y_cols = np.arange(0, dim[0]), np.arange(0, dim[1])
+
+        # ------ Get distance matrix for metrics ------ #
+        x_rows, y_cols = np.arange(0, dim[0]), np.arange(0, dim[1])  # pathogen evolution in (m)
         x_arr, y_arr = np.meshgrid(x_rows, y_cols)
-        latitude_ar = (x_arr - epi_c[0])
-        longitude_ar = (y_arr - epi_c[1])
+        latitude_ar = (x_arr - self.epi_c[0])
+        longitude_ar = (y_arr - self.epi_c[1])
         dist_map = np.sqrt(np.square(longitude_ar) + np.square(latitude_ar)).T
-        self.alpha = parameters["alpha"]  # Lattice parameter
         self.dist_map = dist_map  # Distance map of domain defined from the epicenter
-        # INIT metrics
+        # Get metric structs
         self.percolation = 0  # Percolation status
-        self.max_d = np.zeros(parameters["time_horizon"])   # Array used to record metric 'max distance' time series
-        self.time_debug = np.zeros(parameters["time_horizon"])  # Array recording physical time vs model time
-        self.num_infected_arr = np.zeros(parameters["time_horizon"] + 1)  # Array recording # infections/step
+        self.max_d_Arr = np.zeros(parameters["time_horizon"]+1)   # Time-series 'max distance' array,
+        self.t_debug_Arr = np.zeros(parameters["time_horizon"])  # Time-series physical time vs model time
+        self.n_infected_Arr = np.zeros(parameters["time_horizon"] + 1)  # Time-series # infections/step
         self.population_init = len(np.where(tree_dist == 1)[0])  # Healthy tree # at t = 0
+        self.parameters = parameters
+        # Set mode for finding either reproductive ratio R0 or local spreading-dynamics
+        if settings["R0_mode"]:
+            self.time_f = parameters['l_time'] + 1  # Set sim run-time to be equal to life-time of infection
+            settings["BCD3"] = False  # Set percolation BCD to False
+            infected[epi_cx, epi_cy] = 1  # Set 1 epicenter to infected status
+            tree_dist[epi_cx, epi_cy] = 0  # Remove tree at epicenter
+        elif not settings["R0_mode"]:
+            infected[epi_cx - 3:epi_cx + 3, epi_cy - 3:epi_cy + 3] = 1  # Set epicenters to infected status
+            tree_dist[epi_cx - 3:epi_cx + 3, epi_cy - 3:epi_cy + 3] = 0  # Remove susceptible trees at epicenter
+
+        self.infected = infected  # array containing the locations of infected trees
+        self.susceptible = tree_dist  # the susceptible field containing information of all healthy trees
+        # ------ Set simulation settings ------ #
+        self.path_2_save = os.getcwd() + '/animationsData/raw_data/'
+        self.BCD3 = settings["BCD3"]
+        self.animate = settings["anim"]
+        self.R0_mode = settings["R0_mode"]  # If testing for reproduction number
+        self.verbose = settings["verbose"]  # control output print-to-screens
+        self.dyn_plots = settings["dyn_plots"]  # control settings to 'dynamic-plots' .png files
+        self.plt_tseries = settings["plt_tseries"]  # plot time-series results
+        self.settings = settings
+
+    def save_label(self, step):
+        """
+        Use this to save under in %4d format - to be used in animate.sh
+        :param step: current time-step of the simulation
+        :return:
+        """
+        if step < 10:
+            return '000' + str(step)
+        elif step < 100:
+            return '00' + str(step)
+        elif step < 1000:
+            return '0' + str(step)
+        elif step == 1000:
+            return str(step)
 
     def d_metrics(self, inf_ind):
         """
@@ -199,174 +211,171 @@ class SimInit(object):
         :param susceptible: array-like dtype=int susceptible field, values taken \in [0, 1]
         :return: array-like, the NEW-INFECTED cells in the domain
         """
-        if 1:
-            from scipy.ndimage import gaussian_filter
-            # GET All infected cells as 1's
-            # -- infected field increases in time so have to reduce to a value of 1
-            infected = np.array(infected > 0).astype(float)
-            infected_ind = np.where(infected == 1)
-            num_infected = len(infected_ind[0])
-            pr_S_S = np.ones(infected.shape)  # Probability of remaining in S
-            std3 = int(3*self.eff_disp)  # Truncate to 3 standard deviations
-            subset = np.zeros(shape=[2*std3 + 1, 2*std3 + 1])  # init empty subset of 3 standard deviations
-            ones = np.ones(subset.shape)
-            subset[std3, std3] = 1  # set mid-point to infectious state
-            # Blur field with Gaussian kernel
-            blurred_field = self.beta * self.pre_factor * gaussian_filter(subset,
-                                                                          sigma=[self.eff_disp, self.eff_disp],
-                                                                          truncate=3.0)
-            # Iterate over each infected lattice position
-            for inf in range(num_infected):
-                # For each infected position apply gaussian filter and get Pr(S --> S)
-                row, col = infected_ind[0][inf], infected_ind[1][inf]
-                dim = pr_S_S[row - std3:row + std3 + 1, col - std3:col + std3 + 1].shape
-                # If infected tree within boundary
-                if 2*std3+1 == dim[0] and 2*std3+1 == dim[1]:
-                    pr_S_S[row-std3:row+std3+1, col-std3:col+std3+1] = \
-                        pr_S_S[row-std3:row+std3+1, col-std3:col+std3+1] * (ones - blurred_field)
-                # If infected tree not within 3 standard deviations of the boundary pass
-                else:
-                    pass
+        from scipy.ndimage import gaussian_filter
+        # GET All infected cells as 1's
+        # -- infected field increases in time so have to reduce to a value of 1
+        infected = np.array(infected > 0).astype(float)
+        infected_ind = np.where(infected == 1)
+        num_infected = len(infected_ind[0])
+        pr_S_S = np.ones(infected.shape)  # Probability of remaining in S
+        std3 = int(3*self.eff_disp)  # Truncation distance, set to 3 standard deviations
+        subset = np.zeros(shape=[2*std3 + 1, 2*std3 + 1])  # init empty subset of 3 standard deviations
+        ones = np.ones(subset.shape)
+        subset[std3, std3] = 1  # set mid-point to infectious state
+        # Blur sub-field with Gaussian kernel
+        blurred_field = self.beta * self.pre_factor * gaussian_filter(subset,
+                                                                      sigma=[self.eff_disp, self.eff_disp],
+                                                                      truncate=3.0)
+        # Iterate over each infected lattice position
+        for inf in range(num_infected):
+            # For each infected position apply gaussian filter and get Pr(S --> S)
+            row, col = infected_ind[0][inf], infected_ind[1][inf]  # row, col of infected
+            dim = pr_S_S[row - std3:row + std3 + 1, col - std3:col + std3 + 1].shape
+            # If infected tree within boundary
+            if 2*std3+1 == dim[0] and 2*std3+1 == dim[1]:
+                pr_S_S[row-std3:row+std3+1, col-std3:col+std3+1] = \
+                    pr_S_S[row-std3:row+std3+1, col-std3:col+std3+1] * (ones - blurred_field)
+            # If infected tree not within 3 standard deviations of the boundary pass
+            else:  # If infected tree is close to lattice boundary, then pass
+                # todo test if this changes percolation result!
+                pass
 
-            pr_S_I = np.ones(pr_S_S.shape) - pr_S_S  # Find probability of transitioning to infected
-            new_infected = np.where(pr_S_I > np.random.uniform(0, 1, size=infected.shape), 1, 0)  # Get new infected
-            new_infected = new_infected * susceptible  # Take away non-empty cells
-            return new_infected
+        pr_S_I = np.ones(pr_S_S.shape) - pr_S_S  # Find probability of transitioning to infected
+        new_infected = np.where(pr_S_I > np.random.uniform(0, 1, size=infected.shape), 1, 0)  # Get new infected
+        new_infected = new_infected * susceptible  # Take away non-empty cells
+        return new_infected
 
+    def main_run(self):
+        """
+        The main function which simulates the pathogen spreading. The sg_model comprises a monte carlo simulation
+        of non-local dispersal between trees. First a while loop is triggered where the sg_model algorithm is implemented.
+        After the simulation ends a series of time-series plots can be plotted to show disease progression.
 
-def main(settings, parameters):
-    """
-    The main function which simulates the pathogen spreading. The sg_model comprises a monte carlo simulation
-    of non-local dispersal between trees. First a while loop is triggered where the sg_model algorithm is implemented.
-    After the simulation ends a series of time-series plots can be plotted to show disease progression.
+        :param settings: dict, simulation settings controls what type of simulation is run_HPC and how
+        :param parameters: dict, stores sg_model parameters
+        :param domain: array-like, this is the field which is to be processed into an effect landscape
+        :return: (1) float, num_removed: the number of trees killed in the simulation "mortality"
+                 (2) float, max_distance: this is the maximum distance reached by the pathogen
+                 (3) int, time-step: this is the time-elapsed (in computer units)
+                 (4) binary, percolation: this is the status which informs the user if the pathogen has travelled to the
+                     lattice boundary and triggered the simulation to end (a threshold type-behaviour).
+        """
+        np.random.seed()
+        in_progress, time_step, num_infected = [True, 0, 1]  # Each time-step scaled as days
+        if self.verbose:
+            dist = round(self.max_d_Arr.max() * self.alpha, 3)
+            print("...START...")
+            print("max d = {} (m) | Infected = {}".format(dist, num_infected))
+        # ________________Run Algorithm________________ #
+        while in_progress:
+            if self.verbose:
+                t_0 = time.clock()
+            # --- GET field + R0 @ t+1 --- #
+            if self.R0_mode:
+                # This indent prevents secondary infections from infecting other lattice positions
+                new_infected = 2 * self.get_new_infected(infected=self.infected, susceptible=self.susceptible)
+                new_removed = np.array((new_infected > 0),
+                                       dtype=int)  # Transition newly infected trees straight to R class
+                self.removed = (self.removed + new_removed) > 0  # Add new_removed cells to removed class
+                self.susceptible = self.susceptible * (
+                    np.logical_not(self.removed == 1))  # Remove infected from SUSCEPTIBLE class
+                infected_ind = np.where(self.infected > 0)
+                num_infected = len(infected_ind[0])
+                num_removed = len(np.where(self.removed == 1)[0])
 
-    :param settings: dict, simulation settings controls what type of simulation is run_HPC and how
-    :param parameters: dict, stores sg_model parameters
-    :param domain: array-like, this is the field which is to be processed into an effect landscape
-    :return: (1) float, num_removed: the number of trees killed in the simulation "mortality"
-             (2) float, max_distance: this is the maximum distance reached by the pathogen
-             (3) int, time-step: this is the time-elapsed (in computer units)
-             (4) binary, percolation: this is the status which informs the user if the pathogen has travelled to the
-                 lattice boundary and triggered the simulation to end (a threshold type-behaviour).
-    """
-    np.random.seed()
-    p = SimInit(parameters)  # p : hold all parameters
-    plts = Plots(p.rho, p.beta)
-    ts_max_d, ts_num_infected, t_debug = [p.max_d, p.num_infected_arr, p.time_debug]  # arrays to record time-series
-    ts_num_removed = np.zeros(p.time_f)
-    in_progress, time_step, num_infected, num_removed = [True, 0, 1, 0]
-    verbose = settings["verbose"]  # control output print-to-screens
-    dyn_plots = settings["dyn_plots"]  # control settings to 'dynamic-plots' .png files are generated and saved
-    # ________________Run Algorithm________________ #
-    # Each time-step take as days
-    if verbose:
-        dist = round(ts_max_d.max() * p.alpha, 3)
-        print("...START...")
-        # print("max d = {} (m) | Infected = {}".format(dist, num_infected))
-        print("| removed = {}".format(dist, num_removed))
-
-    while in_progress:
-        if verbose:
-            t_0 = time.clock()
-        # Get plots
-        if dyn_plots[0]:
-            if time_step % dyn_plots[1] == 0:
-                t = plts.save_label(step=time_step)
-                save_path = os.getcwd() + '/animationsData_test/raw_data/'
-                np.save(save_path + t, np.array([p.susceptible, p.infected, p.removed]))
-
-        # --- GET field + R0 @ t+1 --- #
-        if settings["R0_mode"]:
-            new_infected = 2 * p.get_new_infected(infected=p.infected, susceptible=p.susceptible)
-            new_removed = np.array((new_infected > 0), dtype=int)  # Transition newly infected trees straight to R class
-            p.removed = (p.removed + new_removed) > 0  # Add new_removed cells to removed class
-            p.susceptible = p.susceptible * (np.logical_not(p.removed == 1))  # Remove infected from SUSCEPTIBLE class
-            infected_ind = np.where(p.infected > 0)
-            num_infected = len(infected_ind[0])
-            num_removed = len(np.where(p.removed == 1)[0])
-
-        elif not settings["R0_mode"]:
             # --- GET fields epidemic @ t+1 --- #
-            new_infected = 2 * p.get_new_infected(infected=p.infected, susceptible=p.susceptible)
-            p.infected = p.infected + (p.infected > 0) + new_infected  # Transition to INFECTED class, add one to existing
-            new_removed = np.array(p.infected == p.survival_times, dtype=int)  # Transition to REMOVED class
-            p.removed = (p.removed + new_removed) > 0  # Add new_removed cells to removed class
-            p.susceptible = p.susceptible * (np.logical_not(p.infected > 1))  # Remove infected from SUSCEPTIBLE class
-            p.infected = p.infected * (np.logical_not(new_removed == 1))  # remove dead trees from Infected class
-            infected_ind = np.where(p.infected > 0)
-            num_infected = len(infected_ind[0])
-            num_removed = len(np.where(p.removed == 1)[0])
+            elif not self.R0_mode:
+                # This indent is the dynamics for a normal outbreak, secondary infected trees can infect others
+                new_infected = 2 * self.get_new_infected(infected=self.infected, susceptible=self.susceptible)
+                self.infected = self.infected + (self.infected > 0) + new_infected  # Transition to INFECTED class
+                new_removed = np.array(self.infected == self.survival_times, dtype=int)  # Transition to REMOVED class
+                self.removed = (self.removed + new_removed) > 0  # Add new_removed cells to removed class
+                self.susceptible = self.susceptible * (
+                    np.logical_not(self.infected > 1))  # Remove infected from SUSCEPTIBLE class
+                self.infected = self.infected * (np.logical_not(new_removed == 1))  # remove dead trees from Infected class
+                infected_ind = np.where(self.infected > 0)
+                num_infected = len(infected_ind[0])
 
-        if verbose:  # Print out step max distance reached and #Infecteds
-            print("Step: {}| #removed = {}".format(time_step, num_removed))
-        # --- IF true get plots --- #
+            # --- IF true get plots --- #
+            if self.dyn_plots[0]:
+                if time_step % self.dyn_plots[1] == 0:
+                    T = SubGrid.save_label(step=time_step)
+                    np.save(self.path_2_save + T, np.array([self.susceptible, self.infected, self.removed]))
 
-        # --- CHECK boundary conditions (BCDs) --- #
-        if num_infected == 0:
+            # ------ CHECK boundary conditions (BCDs) ------ #
             # BCD1 : disease dies, sim ends & percolation taken as negative percolation
-            p.percolation = 0
-            break
-        if time_step == p.time_f:
+            if num_infected == 0:
+                self.percolation = 0
+                break
             # BCD2: disease doesnt die but travels slowly & taken as neutral percolation
-            p.percolation = 0
-            break
-
-        # --- GET metrics --- #
-        max_d = p.d_metrics(inf_ind=infected_ind)  # GET average and mean distance travelled by pathogen
-        ts_max_d[time_step] = max_d
-        ts_num_infected[time_step] = num_infected
-        ts_num_removed[time_step] = num_removed
-        if settings["BCD3"]:
+            if time_step == self.time_f:
+                self.percolation = 0
+                break
+            # --- GET metrics --- #
+            max_d = SubGrid.d_metrics(self, inf_ind=infected_ind)  # GET average and mean distance travelled by pathogen
+            self.max_d_Arr[time_step] = max_d
+            self.n_infected_Arr[time_step] = num_infected
+            if self.verbose:  # Print out step max distance reached and #Infecteds
+                dist = round(self.max_d_Arr.max() * self.alpha, 3)
+                print("  Step: {}  | max d = {} (m) | #Infected = {}".format(time_step, dist, num_infected))
             # BCD3 If distance exceeds boundary then take as positive percolation
-            if p.dim[0] == p.dim[1]:  # Square geometry
-                if max_d > (p.dim[0]/2 - 10) or max_d > (p.dim[1]/2 - 10):
-                    # Vertical or Lateral percolation
-                    p.percolation = 1
-                    break
-            else:  # Channel Geometry:
-                if max_d > (p.dim[1]/2 - 25):
-                    p.percolation = 1
-                    break
-        time_step += 1
-        # __________STEP ITERATION COMPLETE_________ #
-    # ________________END ALGORITHM________________ #
-    if verbose:
-        print('Perc {} @ end step {}'.format(p.percolation, time_step))
-        print("...DONE...")
-    ts_num_infected = ts_num_infected[: time_step + 1]
-    ts_num_removed = ts_num_removed[: time_step+1]  # I @ last step
-    ts_max_d = ts_max_d[: time_step+1] * p.alpha
-    max_d_reached = ts_max_d.max()  # Maximum distance reached by the pathogen
-    max_d_reached = round(max_d_reached / 1000, 4)  # --> convert to km
-    velocity = max_d_reached / (time_step + 1)  # Velocity in units km/day
-    max_pos = round(p.dist_map.max() * p.alpha / 1000, 4)
-    num_removed = len(np.where(p.removed == 1)[0])  # R (-1 from initially infected)
-    # GENERATE time series output plots over single simulation run_HPC
-    if settings["out_plots"]:
-        save_path = os.getcwd() + '/animationsData_test/raw_data/'
-        plot_cls = Plots(p.beta, p.rho)
-        plot_cls.save_settings(parameters, settings, save_path)  # Plots module contains plotting functions
-        print('---> Max d reached = {} (km), max d possible = {} (km)'.format(max_d_reached, max_pos))
-        # Plot removed per step
-        label = {'title': "Removed / step", 'xlabel': 'days', 'ylabel': r'$R_0$(t)'}
-        plot_cls.plot_tseries(metric=np.gradient(ts_num_removed), labels=label, fit=False, saves_=[False, None])
-        # Plot num_removed metric
-        label = {'title': "Total removed = {}".format(num_removed), 'xlabel': 'days', 'ylabel': r'# removed'}
-        plot_cls.plot_tseries(metric=ts_num_removed, labels=label, fit=False, saves_=[False, None])
+            if self.BCD3:
+                if self.dim[0] == self.dim[1]:  # Square geometry
+                    if max_d > (self.dim[0] / 2 - 10) or max_d > (self.dim[1] / 2 - 10):
+                        # Vertical or Lateral percolation
+                        self.percolation = 1
+                        break
+                else:  # Channel Geometry:
+                    if max_d > (self.dim[1] / 2 - 25):
+                        self.percolation = 1
+                        break
+            if self.verbose:
+                t_f = time.clock()
+                self.t_debug_Arr[time_step] = t_f - t_0
+                print("  Time elapsed in loop: {}".format(round(t_f - t_0, 4)))
+            time_step += 1
+            # __________ITERATION COMPLETE_________ #
 
-        save_tseries = False
-        if save_tseries:
-            beta = round(parameters["beta"], 2)
-            name = 'b_' + str(beta).replace('.', '-') + '_r_' + str(parameters["rho"]).replace('.', '-') + \
-                   '_L_' + str(parameters["eff_disp"]).replace('.', '-')
-            np.save('max_d_' + name, ts_max_d)
+        # ________________END ALGORITHM________________ #
+        # Get time series data
+        max_d_reached = self.max_d_Arr.max() / 1000  # Maximum distance reached by the pathogen in (km)
+        num_removed = len(np.where(self.removed == 1)[0])  # R (-1 from initially infected)
+        velocity = max_d_reached / (time_step + 1)  # get velocity in (km/day)
+        ts_num_infected = self.n_infected_Arr[: time_step + 1]
+        # GENERATE time series output plots over single simulation run_HPC
+        if self.animate:
+            t_debug = self.t_debug_Arr[:time_step]
+            ts_max_d = self.max_d_Arr[: time_step + 1] * self.alpha
+            plot_cls = Plots(self.beta, self.rho)  # Plots module contains plotting functions
+            plot_cls.save_settings(self.parameters, self.settings, self.path_2_save)
+            if self.plt_tseries:
+                max_pos = round(self.dist_map.max() * self.alpha / 1000, 4)
+                max_d_reached = round(max_d_reached / 1000, 4)
+                print('Step: {}, max d reached = {} (km), max d possible = {} (km)'.format(time_step, max_d_reached,
+                                                                                           max_pos))
+                # Plot max d metric
+                label = {'title': "max d distance", 'xlabel': 'days', 'ylabel': 'distance (km)'}
+                plot_cls.plot_tseries(metric=ts_max_d, labels=label, fit=False, saves_=[False, None])
+                # Plot number of infected (SIR)
+                label = {'title': "num infected", 'xlabel': 'days', 'ylabel': '# trees'}
+                plot_cls.plot_tseries(metric=ts_num_infected, labels=label, fit=False, saves_=[False, 'num_inf_0'])
+                # Plot log number of infected
+                label = {'title': "(log) num infected", 'xlabel': 'days', 'ylabel': 'log # trees'}
+                plot_cls.plot_tseries(metric=ts_num_infected, labels=label, fit=False, saves_=[False, 'num_inf_0'])
+                # Plot physical computer runtime stats
+                label = {'title': "computer runtime", 'xlabel': 'step', 'ylabel': 'physical runtime'}
+                plot_cls.plot_tseries(metric=t_debug, labels=label, fit=False, saves_=[False, 'rt_0'])
+                # IF True, save time-series data to file
+                save_tseries = False
+                if save_tseries:
+                    beta = round(self.beta, 2)
+                    name = 'b_' + str(beta).replace('.', '-') + '_r_' + str(self.rho).replace('.', '-') + \
+                           '_L_' + str(self.eff_disp).replace('.', '-')
 
-    # ##### COMPLETE: Individual realisation complete & metrics gathered # #####
-    return num_removed, velocity, max_d_reached, time_step, p.percolation, p.population, ts_max_d, ts_num_removed
+                    np.save('max_d_' + name, ts_max_d)
 
-
-if __name__ == "__main__":
-    ""
+        # ##### COMPLETE: Individual realisation complete & metrics gathered # #####
+        return num_removed, velocity, max_d_reached, time_step, self.percolation, self.population, ts_num_infected
 
 
 

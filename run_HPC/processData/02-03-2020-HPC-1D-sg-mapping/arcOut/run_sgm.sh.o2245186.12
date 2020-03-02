@@ -1,0 +1,18 @@
+## Running job 2245186.12 on host dc2s5b3b.arc3.leeds.ac.uk
+##
+## Resources granted:
+##
+## h_vmem = 1G
+## h_rt   = 48:00:00
+## disk   = 1G
+
+Running; mode sg mapping 1D, R0 False
+Start time:  2020-03-02 13:12:58.723409  |  sim :  12
+    ell = 5.0 : 1 / 1
+    ell = 5.0 : 1 / 1
+    ell = 5.0 : 1 / 1
+    ell = 5.0 : 1 / 1
+    ell = 5.0 : 1 / 1
+End time: 2020-03-02 13:17:47.811349 |  sim : 12 
+Time taken: 4.774 (mins)
+Simulations Finished

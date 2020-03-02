@@ -93,7 +93,6 @@ for r in range(repeats):  # ITERATE repeats
                 run_times[r, i, j, k] = run_time_
                 percolation_pr[r, i, j, k] = percolation_
                 mortality_ratio[r, i, j, k] = mortality_ / population_sz
-
     # save results as multi-dimensional arrays
     np.save(output_path + "/run_time/" + save_id, run_times)
     np.save(output_path + "/mortality/" + save_id, mortality)
