@@ -142,8 +142,10 @@ class SimInit(object):
         epi_cx, epi_cy = int(dim[0]/2), int(dim[1]/2)  # Set epicenter
         infected = np.zeros(dim)       # Infected field
         tree_dist[0], tree_dist[-1], tree_dist[:, 0], tree_dist[:, -1] = [0, 0, 0, 0]  # Set boundary conditions
-        infected[epi_cx, epi_cy] = 1   # Set epicenters to infected status
-        tree_dist[epi_cx, epi_cy] = 0  # Remove susceptible trees at epicenter
+        # infected[epi_cx, epi_cy] = 1   # Set epicenters to infected status
+        # tree_dist[epi_cx, epi_cy] = 0  # Remove susceptible trees at epicenter
+        infected[epi_cx-3:epi_cx+3, epi_cy-3:epi_cy+3] = 1
+        tree_dist[epi_cx-3:epi_cx+3, epi_cy-3:epi_cy+3] = 0  # Remove susceptible trees at epicenter
         epi_c = [epi_cx, epi_cy]
         self.dim = dim  # dimension of lattice
         self.epi_c = epi_c  # epicenter locations
@@ -274,7 +276,7 @@ def main(settings, parameters):
                 np.save(save_path + t, np.array([p.susceptible, p.infected, p.removed]))
 
         # --- GET field + R0 @ t+1 --- #
-        if settings["run_local"]:
+        if settings["R0_mode"]:
             new_infected = 2 * p.get_new_infected(infected=p.infected, susceptible=p.susceptible)
             new_removed = np.array((new_infected > 0), dtype=int)  # Transition newly infected trees straight to R class
             p.removed = (p.removed + new_removed) > 0  # Add new_removed cells to removed class
@@ -282,7 +284,8 @@ def main(settings, parameters):
             infected_ind = np.where(p.infected > 0)
             num_infected = len(infected_ind[0])
             num_removed = len(np.where(p.removed == 1)[0])
-        elif not settings["run_local"]:
+
+        elif not settings["R0_mode"]:
             # --- GET fields epidemic @ t+1 --- #
             new_infected = 2 * p.get_new_infected(infected=p.infected, susceptible=p.susceptible)
             p.infected = p.infected + (p.infected > 0) + new_infected  # Transition to INFECTED class, add one to existing
@@ -328,6 +331,7 @@ def main(settings, parameters):
         # __________STEP ITERATION COMPLETE_________ #
     # ________________END ALGORITHM________________ #
     if verbose:
+        print('Perc {} @ end step {}'.format(p.percolation, time_step))
         print("...DONE...")
     ts_num_infected = ts_num_infected[: time_step + 1]
     ts_num_removed = ts_num_removed[: time_step+1]  # I @ last step
@@ -339,6 +343,7 @@ def main(settings, parameters):
     num_removed = len(np.where(p.removed == 1)[0])  # R (-1 from initially infected)
     # GENERATE time series output plots over single simulation run_HPC
     if settings["out_plots"]:
+        save_path = os.getcwd() + '/animationsData_test/raw_data/'
         plot_cls = Plots(p.beta, p.rho)
         plot_cls.save_settings(parameters, settings, save_path)  # Plots module contains plotting functions
         print('---> Max d reached = {} (km), max d possible = {} (km)'.format(max_d_reached, max_pos))

@@ -19,6 +19,7 @@ folder using 'data_process' file.
 Settings[R0_mode]: set True, to get reproductive ratio of pathogen and tree species. Domain should be small and
                    R0 saved as mortality field
 """
+
 import os
 import sys
 import time
@@ -33,36 +34,36 @@ output_path = os.getcwd() + '/processData/' + date + '-' + mode + sim_type + sim
 params = {"l_time": 100, "time_horizon": 3650}
 # Default HPC simulation settings
 settings = {"out_path": output_path, "date": date, "job_id": job_id, "plt_tseries": False, "save_figs": False,
-            "dyn_plots": [False, 1, True], "anim": False, "BCD3": True, "individual": False, "verbose": False,
+            "dyn_plots": [False, None, False], "anim": False, "BCD3": True, "individual": False, "verbose": False,
             "HPC": mode, "debug_time": True, "R0_mode": False}
 
 # Define parameters
 alpha = 5  # lattice constant m^2
 params["alpha"] = alpha
-params["domain_sz"] = [60, 60]  # to convert to (m), multiply by alpha, If R0 then domain can be small ~3*ell
+params["domain_sz"] = [200, 200]  # to convert to (m), multiply by alpha, If R0 then domain can be small ~3*ell
 # save ID : unique to each core used
 if int(job_id) < 10:
     save_id = '00' + str(job_id)
 if 10 <= int(job_id) <= 100:
     save_id = '0' + str(job_id)
-if 0:  # Sub-grid mapping format
+if 1:  # Sub-grid mapping format
     # RUN partial parameter space
     mode = "sg mapping 1D"
-    rho_Arr_hig = np.linspace(0.10, 0.400, 4)
-    rho_Arr_med = np.arange(0.051, 0.10, 0.010)
-    rho_Arr_low = np.arange(0.0001, 0.050, 0.0001)  # Tree density range stack at different resolutions
-    rho_Arr = np.hstack([rho_Arr_low, rho_Arr_med, rho_Arr_hig])
-    beta_Arr = np.array([0.005, 0.0075, 0.010])  # Infectivity constant/rate
+    # rho_Arr_hig = np.linspace(0.10, 0.400, 4) # rho_Arr = np.hstack([rho_Arr_low, rho_Arr_med, rho_Arr_hig])
+    rho_Arr_med = np.linspace(0.051, 0.10, 10)
+    rho_Arr_low = np.linspace(0.001, 0.050, 50)  # Tree density range stack at different resolutions
+    rho_Arr = np.hstack([rho_Arr_low, rho_Arr_med])
+    beta_Arr = np.array([0.005])  # Infectivity constant (or rate) \approx \in [0.005, 0.020]
     eff_sigma_Arr = np.array([25]) / alpha  # Dispersal distance in comp units (not physical)
-if 1:  # Phase-plane format
+if 0:  # Phase-plane format
     # RUN Full parameter space
     mode = "Phase plane 2D"
     rho_Arr = np.array([0.01, 0.02, 0.03, 0.04])
     beta_Arr = np.linspace(0.0, 0.0200, 100)
     eff_sigma_Arr = np.linspace(5, 30, len(beta_Arr)) / alpha
 
-settings["R0_mode"] = True
-repeats = 10  # ensemble size = repeats * # HCP_cores
+settings["R0_mode"] = False
+repeats = 5  # ensemble size = repeats * # HCP_cores
 dim_ = np.array([repeats, eff_sigma_Arr.shape[0], beta_Arr.shape[0], rho_Arr.shape[0]])  # parameter space dimension
 # DEFINE data structures to save results
 mortality = np.zeros(shape=dim_)
@@ -93,13 +94,14 @@ for r in range(repeats):  # ITERATE repeats
                 percolation_pr[r, i, j, k] = percolation_
                 mortality_ratio[r, i, j, k] = mortality_ / population_sz
 
-# save results as multi-dimensional arrays
-np.save(output_path + "/run_time/" + save_id, run_times)
-np.save(output_path + "/mortality/" + save_id, mortality)
-np.save(output_path + "/velocity/" + save_id, velocities)  # saved in km/day
-np.save(output_path + "/percolation/" + save_id, percolation_pr)
-np.save(output_path + "/max_distance_km/" + save_id, max_distances)  # saved in km
-np.save(output_path + "/mortality_ratio/" + save_id, mortality_ratio)
+    # save results as multi-dimensional arrays
+    np.save(output_path + "/run_time/" + save_id, run_times)
+    np.save(output_path + "/mortality/" + save_id, mortality)
+    np.save(output_path + "/velocity/" + save_id, velocities)  # saved in km/day
+    np.save(output_path + "/percolation/" + save_id, percolation_pr)
+    np.save(output_path + "/max_distance_km/" + save_id, max_distances)  # saved in km
+    np.save(output_path + "/mortality_ratio/" + save_id, mortality_ratio)
+
 # #### End param sweep # ####
 tf = time.process_time() - t0
 tf = np.float64(tf / 60)

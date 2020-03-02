@@ -123,20 +123,17 @@ class SubGrid(object):
         epi_cx, epi_cy = int(dim[0]/2), int(dim[1]/2)  # epicenter
         infected = np.zeros(dim)  # Infected field
         tree_dist[0], tree_dist[-1], tree_dist[:, 0], tree_dist[:, -1] = [0, 0, 0, 0]  # Boundary conditions
-        infected[epi_cx, epi_cy] = 1   # Set epicenters to infected status
-        tree_dist[epi_cx, epi_cy] = 0  # Remove susceptible trees at epicenter
         self.dim = dim  # dimension of lattice
         self.epi_c = [epi_cx, epi_cy]  # epicenter locations
-        self.infected = infected  # array containing the locations of infected trees
         self.population = population_size  # the number of trees in the population at T=0
         self.removed = np.zeros(dim)  # the removed field storing locations of all dead trees
-        self.susceptible = tree_dist  # the susceptible field containing information of all healthy trees
         self.rho = parameters['rho']  # the Tree density
         self.eff_disp = parameters["eff_disp"]  # the 'effective' dispersal distance in computer unit
         self.time_f = parameters["time_horizon"]  # the time-epoch BCD, simulation stops if runtime exceeds this
         self.survival_times = parameters['l_time'] + 1 * np.ones(dim)  # the survival time of each lattice point
         self.pre_factor = 2 * np.pi * (parameters["eff_disp"]**2)  # the dispersal normalisation constant
         self.beta = parameters["beta"]  # The infectivity rate in units day^-1
+        self.alpha = parameters["alpha"]  # Lattice parameter
         try:
             # Check beta satisfies a probability \in [0, 1]
             assert self.beta < 1
@@ -147,13 +144,12 @@ class SubGrid(object):
             print("Unphysical probability")
             sys.exit("error...")
 
-        # Get distance matrix
+        # ------ Get distance matrix for metrics ------ #
         x_rows, y_cols = np.arange(0, dim[0]), np.arange(0, dim[1])  # pathogen evolution in (m)
         x_arr, y_arr = np.meshgrid(x_rows, y_cols)
         latitude_ar = (x_arr - self.epi_c[0])
         longitude_ar = (y_arr - self.epi_c[1])
         dist_map = np.sqrt(np.square(longitude_ar) + np.square(latitude_ar)).T
-        self.alpha = parameters["alpha"]  # Lattice parameter
         self.dist_map = dist_map  # Distance map of domain defined from the epicenter
         # Get metric structs
         self.percolation = 0  # Percolation status
@@ -162,14 +158,23 @@ class SubGrid(object):
         self.n_infected_Arr = np.zeros(parameters["time_horizon"] + 1)  # Time-series # infections/step
         self.population_init = len(np.where(tree_dist == 1)[0])  # Healthy tree # at t = 0
         self.parameters = parameters
+        # Set mode for finding either reproductive ratio R0 or local spreading-dynamics
+        if settings["R0_mode"]:
+            self.time_f = parameters['l_time'] + 1  # Set sim run-time to be equal to life-time of infection
+            settings["BCD3"] = False  # Set percolation BCD to False
+            infected[epi_cx, epi_cy] = 1  # Set 1 epicenter to infected status
+            tree_dist[epi_cx, epi_cy] = 0  # Remove tree at epicenter
+        elif not settings["R0_mode"]:
+            infected[epi_cx - 3:epi_cx + 3, epi_cy - 3:epi_cy + 3] = 1  # Set epicenters to infected status
+            tree_dist[epi_cx - 3:epi_cx + 3, epi_cy - 3:epi_cy + 3] = 0  # Remove susceptible trees at epicenter
 
+        self.infected = infected  # array containing the locations of infected trees
+        self.susceptible = tree_dist  # the susceptible field containing information of all healthy trees
         # ------ Set simulation settings ------ #
         self.path_2_save = os.getcwd() + '/animationsData/raw_data/'
         self.BCD3 = settings["BCD3"]
         self.animate = settings["anim"]
         self.R0_mode = settings["R0_mode"]  # If testing for reproduction number
-        if settings["R0_mode"]:  # if R0 mode then set sim run-time to be equal to life-time of infection
-            self.time_f = parameters['l_time'] + 1
         self.verbose = settings["verbose"]  # control output print-to-screens
         self.dyn_plots = settings["dyn_plots"]  # control settings to 'dynamic-plots' .png files
         self.plt_tseries = settings["plt_tseries"]  # plot time-series results
@@ -256,7 +261,6 @@ class SubGrid(object):
                      lattice boundary and triggered the simulation to end (a threshold type-behaviour).
         """
         np.random.seed()
-
         in_progress, time_step, num_infected = [True, 0, 1]  # Each time-step scaled as days
         if self.verbose:
             dist = round(self.max_d_Arr.max() * self.alpha, 3)
@@ -334,7 +338,6 @@ class SubGrid(object):
 
         # ________________END ALGORITHM________________ #
         # Get time series data
-
         max_d_reached = self.max_d_Arr.max() / 1000  # Maximum distance reached by the pathogen in (km)
         num_removed = len(np.where(self.removed == 1)[0])  # R (-1 from initially infected)
         velocity = max_d_reached / (time_step + 1)  # get velocity in (km/day)
@@ -360,7 +363,6 @@ class SubGrid(object):
                 label = {'title': "(log) num infected", 'xlabel': 'days', 'ylabel': 'log # trees'}
                 plot_cls.plot_tseries(metric=ts_num_infected, labels=label, fit=False, saves_=[False, 'num_inf_0'])
                 # Plot physical computer runtime stats
-
                 label = {'title': "computer runtime", 'xlabel': 'step', 'ylabel': 'physical runtime'}
                 plot_cls.plot_tseries(metric=t_debug, labels=label, fit=False, saves_=[False, 'rt_0'])
                 # IF True, save time-series data to file

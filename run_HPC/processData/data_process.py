@@ -176,7 +176,7 @@ class Plots:
         :return: arr ensemble_Av, array of simulation data
         """
         data_path = os.getcwd() + '/' + results_name + '/' + self.field
-        file_list = sorted(os.listdir(data_path))[:10]
+        file_list = sorted(os.listdir(data_path))
         dim_ = np.load(data_path + '/' + file_list[0]).shape[1:4]  # drop extra dimension for repeats
         ensemble_data = np.zeros(dim_)
         hpc_core_repeat = np.load(data_path + '/' + file_list[0]).shape[0]
@@ -185,7 +185,7 @@ class Plots:
             hpc_core_result = np.load(data_path + '/' + file)
             for repeat in hpc_core_result:  # iterate through repeated results get sum for each file
                 ensemble_data = ensemble_data + repeat
-
+        print((hpc_core_repeat * len(file_list)))
         ensemble_data = ensemble_data / (hpc_core_repeat * len(file_list))  # averaged
         return ensemble_data
 
@@ -193,15 +193,13 @@ class Plots:
 if __name__ == '__main__':
     # Data fields saved
     fields = ['max_distance_km', 'mortality', 'mortality_ratio', 'percolation', 'run_time', 'velocity']
-    # data_dir = '06-02-2020-HPC-param-sweep-100ell-vs-100beta-ens-300'
     # data_dir = '07-02-2020-HPC-param-sweep-100ell-vs-100beta-ens-300-small'
-    # data_dir = '13-02-2020-HPC-R0-v-perc.png-line'
-    data_dir = '28-02-2020-HPC-map-line-test'
-    field_ = fields[1]
+    data_dir = '28-02-2020-HPC-2D-phase-R0'
+    field_ = fields[3]
     # Plot data
     plots = Plots(data_dir, field_)
     ensemble_Av = plots.get_ensemble(results_name=data_dir, saveDat=[False, '-delMe'], show_individual=False)
     # plots.plot_rho_line(ensemble_Av, title='', saveFig=[False, ''], saveData=[False, ''])
-    # plots.plot_2d(ensemble_Av, saveFig=[True, ''], saveData=False)
+    plots.plot_2d(ensemble_Av, saveFig=[False, ''], saveData=False)
 
 # End
