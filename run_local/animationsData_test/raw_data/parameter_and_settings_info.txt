@@ -5,15 +5,15 @@ eff_disp:5.0
 row_dim:100
 col_dim:100
 time_horizon:3650
-rho:0.05
+rho:0.025
 beta:0.005
 
 ______Simulation parameters_______
 out_path:/Users/py13jh/PycharmProjects/subgrid_model/run_local/animationsData/
-anim:False
+anim:True
 BCD3:True
 verbose:True
 save_figs:False
-out_plots:True
+plt_tseries:True
 dyn_plots:[True, 1, False]
 R0_mode:False

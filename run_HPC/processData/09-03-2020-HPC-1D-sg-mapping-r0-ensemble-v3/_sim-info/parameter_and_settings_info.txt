@@ -1,0 +1,28 @@
+______Simulation Parameters_______
+l_time : 100
+time_horizon : 3650
+alpha : 5
+domain_sz : [60, 60]
+eff_disp : 5.0
+beta : 0.01
+rho : 0.1
+Beta values : [ 0.005   0.0075  0.01  ] (m), # = 3
+Dispersal values : 25.0 -- 25.0(m), # = 1
+Density values : 0.001 -- 0.1, # = 250
+# HPC core repeats : 100
+
+______Simulation Settings_______
+out_path:/nobackup/py13jh/subgrid_model/run_HPC/processData/09-03-2020-HPC-1D-sg-mapping-r0-ensemble-v3
+date:09-03-2020
+job_id:92
+plt_tseries:False
+save_figs:False
+dyn_plots:[False, None, False]
+anim:False
+BCD3:False
+individual:False
+verbose:False
+HPC:HPC
+debug_time:True
+R0_mode:True
+repeats:100

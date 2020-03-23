@@ -82,19 +82,23 @@ for i, frame in enumerate(files[:-1]):
         ax.imshow(S, cmap=cmap, origin="lower", norm=norm)
         if 1:
             # ax.imshow(kernels/max, cmap=plt.get_cmap('Reds'), vmin=0, vmax=0.105, alpha=0.60, origin="lower")
-            # ax.imshow(S, cmap=cmap, norm=norm, alpha=0.75, origin="lower")
-            # for co in zip(ind_sus[0], ind_sus[1]):
-            #    circ = Circle((co[1], co[0]), 1, alpha=0.25, color='g')
-            #    ax.add_patch(circ)
+            ax.imshow(S, cmap=cmap, norm=norm, alpha=0.75, origin="lower")
             for co in zip(ind_inf[0], ind_inf[1]):
-                circ = Circle((co[1], co[0]), 2, alpha=0.5, color='r')
+                c_ = I[co[0], co[1]]  # yellow-red on color scale each step through infectious period
+                c_ = (c_ - 1)/100
+                circ = Circle((co[1], co[0]), 1.5, alpha=1, color=[1, 1-c_, 0])
                 ax.add_patch(circ)
 
-            # for co in zip(ind_rem[0], ind_rem[1]):
-            #    circ = Circle((co[1], co[0]), 2, alpha=0.5, color='saddlebrown')
-            #    ax.add_patch(circ)
+            for co in zip(ind_rem[0], ind_rem[1]):
+                circ = Circle((co[1], co[0]), 1, alpha=1, color='black')
+                ax.add_patch(circ)
+
+            for co in zip(ind_sus[0], ind_sus[1]):
+                circ = Circle((co[1], co[0]), 1.25, alpha=0.3, color='green')
+                ax.add_patch(circ)
+
         ax.set_xticks([])
-        #ax.set_yticks([])
+        ax.set_yticks([])
         plt.savefig(save_dir + save_nm(c))
         plt.close()
 

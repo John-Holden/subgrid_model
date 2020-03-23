@@ -10,6 +10,8 @@
       <excludeFolder url="file://$MODULE_DIR$/run-HPC/outputData" />
       <excludeFolder url="file://$MODULE_DIR$/run/animationsData" />
       <excludeFolder url="file://$MODULE_DIR$/run/outputData" />
+      <excludeFolder url="file://$MODULE_DIR$/run_local/animationsData_test/raw_data" />
+      <excludeFolder url="file://$MODULE_DIR$/run_local/animationsData_test/temp_frames" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

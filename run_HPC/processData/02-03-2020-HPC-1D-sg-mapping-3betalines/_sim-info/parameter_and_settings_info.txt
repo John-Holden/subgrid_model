@@ -1,0 +1,28 @@
+______Simulation Parameters_______
+l_time : 100
+time_horizon : 3650
+alpha : 5
+domain_sz : [200, 200]
+eff_disp : 5.0
+beta : 0.01
+rho : 0.1
+Beta values : [ 0.005   0.0075  0.01  ] (m), # = 3
+Dispersal values : 25.0 -- 25.0(m), # = 1
+Density values : 0.001 -- 0.1, # = 60
+# HPC core repeats : 5
+
+______Simulation Settings_______
+out_path:/nobackup/py13jh/subgrid_model/run_HPC/processData/02-03-2020-HPC-1D-sg-mapping-3betalines
+date:02-03-2020
+job_id:8
+plt_tseries:False
+save_figs:False
+dyn_plots:[False, None, False]
+anim:False
+BCD3:True
+individual:False
+verbose:False
+HPC:HPC
+debug_time:True
+R0_mode:False
+repeats:5

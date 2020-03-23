@@ -156,7 +156,6 @@ class SubGrid(object):
         self.max_d_Arr = np.zeros(parameters["time_horizon"])   # Time-series 'max distance' array,
         self.t_debug_Arr = np.zeros(parameters["time_horizon"])  # Time-series physical time vs model time
         self.n_infected_Arr = np.zeros(parameters["time_horizon"] + 1)  # Time-series # infections/step
-        self.population_init = len(np.where(tree_dist == 1)[0])  # Healthy tree # at t = 0
         self.parameters = parameters
         # Set mode for finding either reproductive ratio R0 or local spreading-dynamics
         if settings["R0_mode"]:
@@ -170,6 +169,7 @@ class SubGrid(object):
 
         self.infected = infected  # array containing the locations of infected trees
         self.susceptible = tree_dist  # the susceptible field containing information of all healthy trees
+        self.population_init = len(np.where(tree_dist == 1)[0])  # Healthy tree # at t = 0
         # ------ Set simulation settings ------ #
         self.path_2_save = os.getcwd() + '/animationsData/raw_data/'
         self.BCD3 = settings["BCD3"]

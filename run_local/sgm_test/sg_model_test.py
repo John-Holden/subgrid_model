@@ -156,7 +156,6 @@ class SubGrid(object):
         self.max_d_Arr = np.zeros(parameters["time_horizon"]+1)   # Time-series 'max distance' array,
         self.t_debug_Arr = np.zeros(parameters["time_horizon"])  # Time-series physical time vs model time
         self.n_infected_Arr = np.zeros(parameters["time_horizon"] + 1)  # Time-series # infections/step
-        self.population_init = len(np.where(tree_dist == 1)[0])  # Healthy tree # at t = 0
         self.parameters = parameters
         # Set mode for finding either reproductive ratio R0 or local spreading-dynamics
         if settings["R0_mode"]:
@@ -165,13 +164,14 @@ class SubGrid(object):
             infected[epi_cx, epi_cy] = 1  # Set 1 epicenter to infected status
             tree_dist[epi_cx, epi_cy] = 0  # Remove tree at epicenter
         elif not settings["R0_mode"]:
-            infected[epi_cx - 3:epi_cx + 3, epi_cy - 3:epi_cy + 3] = 1  # Set epicenters to infected status
-            tree_dist[epi_cx - 3:epi_cx + 3, epi_cy - 3:epi_cy + 3] = 0  # Remove susceptible trees at epicenter
+            infected[epi_cx - 1:epi_cx + 1, epi_cy - 1:epi_cy + 1] = 1  # Set epicenters to infected status
+            tree_dist[epi_cx - 1:epi_cx + 1, epi_cy - 1:epi_cy + 1] = 0  # Remove susceptible trees at epicenter
 
         self.infected = infected  # array containing the locations of infected trees
         self.susceptible = tree_dist  # the susceptible field containing information of all healthy trees
+        self.population_init = len(np.where(tree_dist == 1)[0])  # Healthy tree # at t = 0
         # ------ Set simulation settings ------ #
-        self.path_2_save = os.getcwd() + '/animationsData/raw_data/'
+        self.path_2_save = os.getcwd() + '/animationsData_test/raw_data/'
         self.BCD3 = settings["BCD3"]
         self.animate = settings["anim"]
         self.R0_mode = settings["R0_mode"]  # If testing for reproduction number
@@ -187,12 +187,14 @@ class SubGrid(object):
         :return:
         """
         if step < 10:
-            return '000' + str(step)
+            return '0000' + str(step)
         elif step < 100:
-            return '00' + str(step)
+            return '000' + str(step)
         elif step < 1000:
+            return '00' + str(step)
+        elif step < 10000:
             return '0' + str(step)
-        elif step == 1000:
+        elif step == 10000:
             return str(step)
 
     def d_metrics(self, inf_ind):
@@ -299,7 +301,7 @@ class SubGrid(object):
             # --- IF true get plots --- #
             if self.dyn_plots[0]:
                 if time_step % self.dyn_plots[1] == 0:
-                    T = SubGrid.save_label(step=time_step)
+                    T = SubGrid.save_label(self, step=time_step)
                     np.save(self.path_2_save + T, np.array([self.susceptible, self.infected, self.removed]))
 
             # ------ CHECK boundary conditions (BCDs) ------ #
@@ -342,6 +344,7 @@ class SubGrid(object):
         num_removed = len(np.where(self.removed == 1)[0])  # R (-1 from initially infected)
         velocity = max_d_reached / (time_step + 1)  # get velocity in (km/day)
         ts_num_infected = self.n_infected_Arr[: time_step + 1]
+        epidemic_impact = (num_removed + num_infected) / self.population
         # GENERATE time series output plots over single simulation run_HPC
         if self.animate:
             t_debug = self.t_debug_Arr[:time_step]
@@ -375,7 +378,7 @@ class SubGrid(object):
                     np.save('max_d_' + name, ts_max_d)
 
         # ##### COMPLETE: Individual realisation complete & metrics gathered # #####
-        return num_removed, velocity, max_d_reached, time_step, self.percolation, self.population, ts_num_infected
+        return num_removed, velocity, max_d_reached, time_step, self.percolation, epidemic_impact, ts_num_infected
 
 
 

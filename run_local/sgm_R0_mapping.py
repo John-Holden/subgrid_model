@@ -10,7 +10,7 @@ import os
 import sys
 import numpy as np
 from math import log
-import sgm_test.sg_model_test as model
+import sgm_test.sg_model_test as sg_model
 import matplotlib.pyplot as plt
 from scipy.optimize import curve_fit
 
@@ -26,9 +26,10 @@ def R0_subgrid_mapping(arr, beta, ell):
 def lin_func(x, m, c):
     return m*x + c
 
+
 # ------------------ SET settings ------------------  #
 settings = {"out_path": os.getcwd() + '/animationsData/', "anim": False, "BCD3": False, "verbose": False,
-            "save_figs": False, "out_plots": False, "run_local": True, "dyn_plots": [False, 1, False],
+            "save_figs": False, "plt_tseries": False, "run_local": True, "dyn_plots": [False, 1, False],
             "R0_mode": True}
 
 # ------------------ SET parameters ------------------  #
@@ -43,10 +44,9 @@ if settings["R0_mode"]:
     params["time_horizon"] = params["l_time"]
 
 # ------------------ SET arrays ------------------  #
-
 if 1:  # Test rho array
-    beta_Arr = np.array([0.005, 0.0075, 0.01])
-    rho_Arr = np.linspace(0.0, 1, 10)
+    beta_Arr = np.array([0.0075])
+    rho_Arr = np.linspace(0.001, 1, 10)
     test_ = "rho"
 
 if 0:  # Test beta array
@@ -54,7 +54,7 @@ if 0:  # Test beta array
     rho_Arr = np.array([0.05, 0.075, 0.10])
     test_ = "beta"
 
-ensemble_size = 100
+ensemble_size = 200
 R0_predicted_arr = np.zeros(shape=[len(rho_Arr), len(beta_Arr)])
 R0_simulated_arr = np.zeros(shape=[len(rho_Arr), len(beta_Arr), ensemble_size])
 # ------------------ Begin simulation ------------------  #
@@ -65,8 +65,9 @@ for i, rho in enumerate(rho_Arr):
         params["beta"] = beta
         R0_predicted_arr[i, j] = R0_analytical(beta, rho, sigma=eff_dispersal, T=params["l_time"])
         for r in range(ensemble_size):
-            Results = model.main(settings, params)
-            R0_simulated_arr[i, j, r] = Results[0]  # Save mortality
+            model = sg_model.SubGrid(params, settings)
+            results = model.main_run()
+            R0_simulated_arr[i, j, r] = results[0]  # Save mortality
 
 R0_simulated_arr = R0_simulated_arr.sum(axis=2) / ensemble_size
 if test_ == "rho":

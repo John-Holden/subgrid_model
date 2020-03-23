@@ -13,7 +13,7 @@ date_time=$(date '+%d-%m-%Y %H:%M:%S')
 
 #$ -cwd -V
 #$ -l h_rt=48:00:00
-#$ -t 1-10
+#$ -t 1-50
 
 mode="HPC"
 sim_type="-1D"

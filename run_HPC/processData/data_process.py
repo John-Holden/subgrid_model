@@ -20,9 +20,9 @@ class Plots:
         elif field == 'max_distance_km':
             self.set_plots = {"ylabel": "Distance reached km", "scale": 1}
         elif field == "mortality":
-            if self.settings["R0_mode"]:
-                self.set_plots = {"ylabel": r"$R_0$", "scale": 1}
-            else:
+           if self.settings["R0_mode"]:
+                self.set_plots = {"ylabel": r"$\langle R_0 \rangle$", "scale": 1, }
+           else:
                 self.set_plots = {"ylabel": "# dead", "scale": 1}
         elif field == "mortality_ratio":
             self.set_plots = {"ylabel": r"mortality/population - $\chi$",  "scale": 1}
@@ -35,7 +35,7 @@ class Plots:
         self.disp_Arr = np.load(data_directory + '/_sim-info/disp_Arr.npy') * self.params["alpha"]
         return
 
-    def get_R0_arr(self, rho, ell, T):
+    def get_R0_arr(self, rho, ell, T, beta):
         """
         Get expected R0 as a function of rho, ell, T
         :param rho: tree density
@@ -43,30 +43,9 @@ class Plots:
         :param T: infectious life-time T
         :return: 2D R0 array
         """
-        R0_arr = np.zeros(self.beta_Arr.shape[0])
-        for i in range(self.beta_Arr.shape[0]):
-            beta = self.beta_Arr[i]
-            R0_arr[i] = (2 * np.pi * beta * rho * ell ** 2) * ((1 - 2 / 9 * beta) ** T - 1) / log(1 - 2 / 9 * beta)
-        return R0_arr
+        return (2 * np.pi * beta * rho * ell ** 2) * ((1 - 2 / 9 * beta) ** T - 1) / log(1 - 2 / 9 * beta)
 
-    def plot_chosen(self):
-        """
-        Plot selected data arrays
-        :return:
-        """
-        dat1 = np.load(os.getcwd()+'/beta-perc-line_ell50_0_rho0_05.npy')
-        dat2 = np.load(os.getcwd()+'/beta-perc-line_ell50_0_rho0_025.npy')
-        plt.plot(self.beta_Arr, dat1, label=r'$\rho = 0.050$, $\ell = 50$')
-        plt.plot(self.beta_Arr, dat2, label=r'$\beta = 0.025$, $\ell = 50$')
-        plt.xlabel(r'Tree density $\rho$', size=12)
-        plt.ylabel(self.set_plots["ylabel"], size=12)
-        plt.grid(alpha=0.5)
-        plt.legend()
-        plt.savefig('sg-mapping-comparision-part-rho')
-        plt.show()
-        return
-
-    def plot_rho_line(self, ensemble_data, title, saveFig, saveData):
+    def plot_rho_line(self, ensemble_data, title, saveFig, save_sg_map):
         """
         Plot figures for different values of ell plot rho x-axis against field values for different beta values
         :param ensemble_data: HPC generated data
@@ -78,36 +57,36 @@ class Plots:
         if self.field == "velocity":
             ensemble_data = ensemble_data * 365  # km/year
         for i, ell in enumerate(ensemble_data):
-            fig, ax = plt.subplots(figsize=(7.5, 7))
+            fig, ax = plt.subplots(figsize=(6.5, 6))
             for j, R0_vs_rho in enumerate(ell):
-                ax.plot(self.rho_Arr, R0_vs_rho)
-                ax.scatter(self.rho_Arr, R0_vs_rho, s=10, label=r'$\beta = $ {}'.format(self.beta_Arr[j]))
-                # rho = self.rho_Arr[np.where(R0_vs_rho > 0.99)[0][0]]
-                # ax.plot([rho, rho], [0, 1], c='r', label=r'@ 99% perc: $\rho = ${}'.format(round(rho, 3)))
-                # rho = self.rho_Arr[np.where(R0_vs_rho > 0.50)[0][0]]
-                # ax.plot([rho, rho], [0, 1], c='g', label=r'@ 50% perc: $\rho = ${}'.format(round(rho, 3)))
-                rho = self.rho_Arr[np.where(R0_vs_rho > 0)[0][0]]
-                ax.plot([rho, rho], [0, 1], c='C'+str(j), label=r'@ >0% perc: $\rho = ${}'.format(round(rho, 3)))
 
-            plt.xticks(np.round(np.linspace(0, self.rho_Arr[-1], 21), 3), rotation=60)
-            ax.set_ylabel(self.set_plots['ylabel'], size=14)
-            ax.set_xlabel(r'Tree density $\rho$', size=14)
-            ax.grid(True)
+                # Get simulated data
+                ax.plot(self.rho_Arr, R0_vs_rho, c='C'+str(j), linewidth=1)
+                ax.scatter(self.rho_Arr[::7], R0_vs_rho[::7], s=7.5, label=r'$\beta = $ {}'.format(self.beta_Arr[j]),
+                           c='C'+str(j))
+
+                # Get predicted R0 lines
+                R0_arr = Plots.get_R0_arr(self, rho=self.rho_Arr, beta=self.beta_Arr[j], ell=self.disp_Arr[i]/5, T=100)
+                ax.scatter(self.rho_Arr[::5], R0_arr[::5], color='r', s=3, alpha=0.5)
+                ax.plot(self.rho_Arr[::5], R0_arr[::5], color='r', linewidth=0.5, alpha=0.5)
+
+            plt.xticks(np.round(np.linspace(0, self.rho_Arr[-1], 11), 3), rotation=30)
+            ax.set_ylabel(self.set_plots['ylabel'], size=17)
+            ax.set_xlabel(r'Tree density $\rho$', size=17)
+            # ax.grid(True)
             ax.set_xlim(0, 0.10)
-            ax.set_ylim(0, 1.1)
-            # ax.axvspan(0.001, 0.050, alpha=0.15, color='grey', label=r'Lower $\rho$ regime')
-            ax.set_title(title + r"$\ell = $" + str(self.disp_Arr[i]) + ' (m)', size=15)
+            ax.set_title(title + r"$\ell = $ {}".format(self.disp_Arr[i]) + ' (m)', size=15)
+            plt.legend(prop={'size': 15})
             if saveFig[0]:
                 plt.savefig(os.getcwd() + '/' + 'ens-' + self.field + saveFig[1])
-            plt.legend()
             plt.show()
 
-        if saveData[0]:  # Save R0_lines...
+        if save_sg_map[0]:  # Save R0_lines: used in sub-grid mapping...
             for i, ell_ in enumerate(ensemble_data):
                 for j, beta_ in enumerate(ell_):
                     label = 'beta_{}_ell_{}'.format(str(self.beta_Arr[j]).replace('.', '_'), int(self.disp_Arr[i]))
                     np.save(os.getcwd() + '/{}-'.format(self.field) + label, beta_)
-            np.save(os.getcwd() + '/' + 'rho-' + self.field + '-mapping' + saveData[1], ensemble_data)
+            np.save(os.getcwd() + '/' + 'rho-' + self.field + '-mapping' + save_sg_map[1], ensemble_data)
         return
 
     def plot_beta_line(self, ensemble_data, title, saveFig, saveData):
@@ -135,15 +114,16 @@ class Plots:
                 ax.plot([self.beta_Arr[R0_1], self.beta_Arr[R0_1]], [0, 1], c=colors[j], linestyle='--', alpha=0.5,
                         label=r"$R_0(\ell, \rho, \beta, T) \approx 1 $".format(self.disp_Arr[j]))
                 j += 1
-            ax.set_xlabel(r"Infectivity $\beta$",size=12)
-            ax.set_ylabel(r"Percolation Pr", size=12)
+
+            ax.set_xlabel(r'Infectivity $\beta$', size=12)
+            ax.set_ylabel(self.set_plots["ylabel"], size=12)
             ax.set_title(r"$\rho = $ {}".format(self.rho_Arr[rho]))
             plt.legend()
             plt.savefig('perc-R-{}'.format(i))
             plt.show()
             i += 1
 
-    def plot_2d(self, ensemble_data, saveFig, saveData):
+    def plot_2d_average(self, ensemble_data, saveFig, saveData):
         """
         Plot the 2D average i.e. field values z axis (shown as color) dispersal against beta as a
         function of tree density.
@@ -153,24 +133,90 @@ class Plots:
         :return:
         """
         for i in range(ensemble_data.shape[2]):
-            fig, ax = plt.subplots()
+            fig, ax = plt.subplots(figsize=(12, 10))
             extent = [self.beta_Arr[0], self.beta_Arr[-1], self.disp_Arr[0], self.disp_Arr[-1]]
             data = ensemble_data[:, :, i] * self.set_plots["scale"]
-            data = np.where(data == 0, np.nan, data)
+            data = np.where(data < 0.01, np.nan, data)
             im = ax.imshow(data, origin='lower', extent=extent)
-            ax.set_ylabel(r"$\ell$ (m)", size=14)
-            ax.set_xlabel(r"Infectivity $\beta$", size=14)
+            ax.set_ylabel(r"Dispersal $\ell$ (m)", size=20)
+            ax.set_xlabel(r"Infectivity $\beta$", size=20)
             ax.set_aspect("auto")
-            ax.set_title(r"$\rho = {}$".format(self.rho_Arr[i]))
-            ax.tick_params(axis='x', rotation=70)
+            ax.set_title(r"$\rho = {}$".format(self.rho_Arr[i]), size=20)
+            ax.tick_params(axis='x', rotation=30, size=10)
             cbar = plt.colorbar(im)
-            cbar.set_label(self.set_plots["ylabel"], size=15)
+            cbar.set_label(self.set_plots["ylabel"], size=30)
+            ax.set_ylim(10, 30)
+            plt.xticks(fontsize=20)
+            plt.yticks(fontsize=20)
+            plt.tight_layout()
             if saveFig[0]:
                 plt.savefig(os.getcwd()+'/2D-pspace-' + self.field + '-' + str(i))
             plt.show()
         return
 
-    def get_ensemble(self, results_name, saveDat, show_individual):
+    def plot_2d_distribution(self, results_name, saveFig):
+        import matplotlib.pyplot as plt
+        """
+        1) Plot a 2D distribution of R0, or other quantity.
+        2) Plot a set of distributions from the data 
+        :param resuls_name:
+        :return:
+        """
+        data_path = os.getcwd() + '/' + results_name + '/' + self.field
+        file_list = sorted(os.listdir(data_path))
+        rho_shape = np.load(data_path + '/' + file_list[0]).shape[3]
+        max_R0 = 30  # Define maximum value of R0 for data-set
+        distribution_arr = np.zeros(shape=[max_R0, rho_shape])
+        for c, file in enumerate(file_list):  # iterate through files
+            print('File: {} / {}'.format(c, len(file_list)))
+            hpc_core_result = np.load(data_path + '/' + file)
+            for rho_value in range(rho_shape):
+                R0_dist = hpc_core_result[:, :, :, rho_value].T[0][0]
+                if R0_dist.max() >= max_R0:
+                    print("ERROR max R0")
+                    print(R0_dist.max())
+                    sys.exit()
+                R0_dist = np.sort(R0_dist)
+                R0_values = np.unique(R0_dist)
+                R0_count = np.zeros(R0_values.shape)
+                for i, R0 in enumerate(R0_values):
+                    R0_count[i] = len(np.where(R0_dist == R0)[0])
+                distribution_arr[:, rho_value][R0_values.astype(int)] += (R0_count / 1)
+
+        for i in range(rho_shape):
+            distribution_arr[:, i] = distribution_arr[:, i] / distribution_arr[:, i].sum()
+        extent = [self.rho_Arr[0], self.rho_Arr[-1], 0, max_R0]
+        fig, ax = plt.subplots()
+        im = ax.imshow(np.where(distribution_arr < 0.01, np.nan, distribution_arr), origin="lower", cmap="jet",
+                       aspect="auto", extent=extent, clim=[0, 0.50])
+        ax.plot([0, self.rho_Arr[-1]], [1, 1], c='r')
+        ax.set_ylim(0., 30)
+        ax.set_title(r'$\ell = $ {}, $\beta = {}$'.format(self.disp_Arr[0], self.beta_Arr[0]), size=18)
+        ax.set_xlabel(r'tree density $\rho$', size=13)
+        ax.set_ylabel(r'Reproduction number $R_0$', size=13)
+        cbar = plt.colorbar(im)
+        cbar.set_label(r'$Pr(R_0)$', size=15)
+        if saveFig[0]:
+            plt.savefig('2D-distribution-'+saveFig[1])
+        plt.show()
+
+        fig, ax = plt.subplots()
+        for i in [98, 148, 198, 248]:
+            ax.plot(distribution_arr[:, i], label=r'$\rho = {}$'.format(round(self.rho_Arr[i], 3)),
+                     alpha=0.75)
+            ax.scatter(range(max_R0), distribution_arr[:, i], s=10)
+
+        ax.set_xlabel(r'$R_0$', size=15)
+        ax.set_ylabel(r'$Pr(R_0)$', size=15)
+        ax.set_title(r'$\ell = $ {}, $\beta = {}$'.format(self.disp_Arr[0], self.beta_Arr[0]), size=18)
+        plt.legend(prop={'size': 15})
+        if saveFig[0]:
+            plt.tight_layout()
+            plt.savefig('distribution-comparison-'+saveFig[1])
+        plt.show()
+        return
+
+    def get_ensemble(self, results_name, mode):
         """
         Get the ensemble average from HPC stored directory. Sum over different hpc cores and
         in-core number of repeats.
@@ -183,27 +229,72 @@ class Plots:
         dim_ = np.load(data_path + '/' + file_list[0]).shape[1:4]  # drop extra dimension for repeats
         ensemble_data = np.zeros(dim_)
         hpc_core_repeat = np.load(data_path + '/' + file_list[0]).shape[0]
-        for c, file in enumerate(file_list):  # iterate through files
-            print('File: {} / {}'.format(c, len(file_list)))
-            hpc_core_result = np.load(data_path + '/' + file)
-            for repeat in hpc_core_result:  # iterate through repeated results get sum for each file
-                ensemble_data = ensemble_data + repeat
+        if mode == "mean":
+            for c, file in enumerate(file_list):  # iterate through files
+                print('File: {} / {}'.format(c, len(file_list)))
+                hpc_core_result = np.load(data_path + '/' + file)
+                for repeat in hpc_core_result:  # iterate through repeated results get sum for each file
+                    ensemble_data = ensemble_data + repeat
+            ens_size = hpc_core_repeat * len(file_list)
+            print('Ensemble size', ens_size)
+            ensemble_data = ensemble_data / (ens_size)  # averaged
 
-        ensemble_data = ensemble_data / (hpc_core_repeat * len(file_list))  # averaged
+        elif mode == 'dist':  # If distribution mode then get ALL core results
+            ''
+
         return ensemble_data
+
+
+def combine_ens(ens_av1, ens_av2):
+    import matplotlib as mpl
+    """
+    Compare critical percolation vs R0 lines
+    :param ensemble_Av1: R0 arr
+    :param ensemble_Av2: percolation arr
+    """
+    # sort arr 1
+
+    ens_av1[np.where(ens_av1 < 0.95)] = 0
+    ens_av1[np.where(ens_av1 > 1.05)] = 0
+    ens_av1[np.where(ens_av1 > 0)] = 1
+    # Sort arr 2
+    ens_av2[np.where(ens_av2 > 0.01)] = 0
+    ens_av2[np.where(ens_av2 > 0)] = 2
+    ens = ens_av1 + ens_av2
+    ens = np.where(ens == 0, np.nan, ens)
+    rho_Arr = [0.02, 0.03]
+    cmap = mpl.colors.ListedColormap(["white", "blue", "red"])
+    # norm = mpl.colors.BoundaryNorm(np.arange(0, 2), cmap.N)
+    for i in range(ens_av1.shape[2]):
+        fig, ax = plt.subplots(figsize=(12.5, 8.5))
+        extent = [0, 0.02, 5, 30]
+        data = ens[:, :, i]
+        im = ax.imshow(data, origin='lower', extent=extent, cmap=cmap, clim=[0, 2])
+        # data = ensemble_Av2[:, :, i]
+        # ax.imshow(data, origin='lower', extent=extent, alpha=0.5)
+        ax.set_xlabel(r"Infectivity $\beta$", size=18)
+        ax.set_ylabel(r"Dispersal $\ell$", size=18)
+        ax.set_aspect("auto")
+        ax.set_title(r"$\rho = {}$".format(rho_Arr[i]), size=20)
+        ax.tick_params(axis='x', rotation=70)
+        cbar = fig.colorbar(im, ticks=np.linspace(0, 3, 4), orientation='vertical')
+        cbar.ax.set_yticklabels([r'$\emptyset$', r'$R_0 \approx 1$', r'$\mathcal{P}\ \gtrsim \ 0$'], size=20)
+        plt.setp(cbar.ax.get_yticklabels(), rotation=270)
+        plt.savefig(os.getcwd() + '/2D-pspace-perc-vs-R0-' + str(i))
+        plt.show()
+    return
 
 
 if __name__ == '__main__':
     # Data fields saved
     fields = ['max_distance_km', 'mortality', 'mortality_ratio', 'percolation', 'run_time', 'velocity']
-    # data_dir = '07-02-2020-HPC-param-sweep-100ell-vs-100beta-ens-300-small'
-    # data_dir = '28-02-2020-HPC-2D-phase-R0'
-    data_dir = '02-03-2020-HPC-1D-sg-mapping'
+    data_dir = '09-03-2020-HPC-1D-sg-mapping-r0-ensemble-v3'
+    data_dir = '02-03-2020-HPC-2D-phase-percolation'
     field_ = fields[3]
-    # Plot data
     plots = Plots(data_dir, field_)
-    ensemble_Av = plots.get_ensemble(results_name=data_dir, saveDat=[False, '-delMe'], show_individual=False)
-    plots.plot_rho_line(ensemble_Av, title='', saveFig=[True, '2'], saveData=[False, ''])
-    # plots.plot_2d(ensemble_Av, saveFig=[False, ''], saveData=False)
+    # plots.plot_2d_distribution(results_name=data_dir, saveFig=[True, ''])
+    ensemble_Av = plots.get_ensemble(results_name=data_dir, mode="mean")
+    # plots.plot_rho_line(ensemble_Av, title='', saveFig=[True, '-R0'], save_sg_map=[False, ''])
+    plots.plot_2d_average(ensemble_Av, saveFig=[True, ''], saveData=False)
 
 # End
