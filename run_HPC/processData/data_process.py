@@ -67,15 +67,17 @@ class Plots:
 
                 # Get predicted R0 lines
                 R0_arr = Plots.get_R0_arr(self, rho=self.rho_Arr, beta=self.beta_Arr[j], ell=self.disp_Arr[i]/5, T=100)
-                ax.scatter(self.rho_Arr[::5], R0_arr[::5], color='r', s=3, alpha=0.5)
-                ax.plot(self.rho_Arr[::5], R0_arr[::5], color='r', linewidth=0.5, alpha=0.5)
+                # ax.scatter(self.rho_Arr[::5], R0_arr[::5], color='r', s=, alpha=0.5)
+                ax.plot(self.rho_Arr[::5], R0_arr[::5], color='r', linewidth=0.35, alpha=1)
 
             plt.xticks(np.round(np.linspace(0, self.rho_Arr[-1], 11), 3), rotation=30)
-            ax.set_ylabel(self.set_plots['ylabel'], size=17)
-            ax.set_xlabel(r'Tree density $\rho$', size=17)
+            ax.set_ylabel(self.set_plots['ylabel'], size=25)
+            ax.set_xlabel(r'$\rho$', size=20)
             # ax.grid(True)
             ax.set_xlim(0, 0.10)
-            ax.set_title(title + r"$\ell = $ {}".format(self.disp_Arr[i]) + ' (m)', size=15)
+            ax.set_title(title + r"$\ell = $ {}".format(self.disp_Arr[i]) + ' (m)', size=20)
+            ax.tick_params(axis='both', size=3, labelsize=14)
+            plt.tight_layout()
             plt.legend(prop={'size': 15})
             if saveFig[0]:
                 plt.savefig(os.getcwd() + '/' + 'ens-' + self.field + saveFig[1])
@@ -288,15 +290,14 @@ def combine_ens(ens_av1, ens_av2):
 if __name__ == '__main__':
     # Data fields saved
     fields = ['max_distance_km', 'mortality', 'mortality_ratio', 'percolation', 'run_time', 'velocity']
-    # data_dir = '09-03-2020-HPC-1D-sg-mapping-r0-ensemble-v3'
-    data_dir = '02-03-2020-HPC-2D-phase-percolation'
-    data_dir = '05-03-2020-HPC-1D-sg-mapping-r0-ensemble-v2'
+    data_dir = '09-03-2020-HPC-1D-sg-mapping-r0-ensemble-v3'
+    # data_dir = '02-03-2020-HPC-2D-phase-percolation'
+    # data_dir = '05-03-2020-HPC-1D-sg-mapping-r0-ensemble-v2'
     field_ = fields[1]
     plots = Plots(data_dir, field_)
-    plots.plot_distribution(results_name=data_dir, saveFig=[True, ''])
-    sys.exit()
+    # plots.plot_distribution(results_name=data_dir, saveFig=[True, ''])
     ensemble_Av = plots.get_ensemble(results_name=data_dir, mode="mean")
-    # plots.plot_rho_line(ensemble_Av, title='', saveFig=[True, '-R0'], save_sg_map=[False, ''])
-    plots.plot_2d_average(ensemble_Av, saveFig=[True, ''], saveData=False)
+    plots.plot_rho_line(ensemble_Av, title='', saveFig=[True, '-R0'], save_sg_map=[False, ''])
+    # plots.plot_2d_average(ensemble_Av, saveFig=[True, ''], saveData=False)
 
 # End

@@ -46,7 +46,7 @@ if int(job_id) < 10:
     save_id = '00' + str(job_id)
 if 10 <= int(job_id) <= 100:
     save_id = '0' + str(job_id)
-if 0:  # Sub-grid mapping format
+if 1:  # Sub-grid mapping format
     # RUN partial parameter space
     mode = "sg mapping 1D"
     # rho_Arr_hig = np.linspace(0.10, 0.400, 4) # rho_Arr = np.hstack([rho_Arr_low, rho_Arr_med, rho_Arr_hig])
