@@ -154,11 +154,11 @@ class Plots:
             plt.show()
         return
 
-    def plot_2d_distribution(self, results_name, saveFig):
+    def plot_distribution(self, results_name, saveFig):
         import matplotlib.pyplot as plt
         """
         1) Plot a 2D distribution of R0, or other quantity.
-        2) Plot a set of distributions from the data 
+        2) Plot a set of 1D distributions from the data 
         :param resuls_name:
         :return:
         """
@@ -190,7 +190,7 @@ class Plots:
         im = ax.imshow(np.where(distribution_arr < 0.01, np.nan, distribution_arr), origin="lower", cmap="jet",
                        aspect="auto", extent=extent, clim=[0, 0.50])
         ax.plot([0, self.rho_Arr[-1]], [1, 1], c='r')
-        ax.set_ylim(0., 30)
+        # ax.set_ylim(0., 30)
         ax.set_title(r'$\ell = $ {}, $\beta = {}$'.format(self.disp_Arr[0], self.beta_Arr[0]), size=18)
         ax.set_xlabel(r'tree density $\rho$', size=13)
         ax.set_ylabel(r'Reproduction number $R_0$', size=13)
@@ -288,11 +288,13 @@ def combine_ens(ens_av1, ens_av2):
 if __name__ == '__main__':
     # Data fields saved
     fields = ['max_distance_km', 'mortality', 'mortality_ratio', 'percolation', 'run_time', 'velocity']
-    data_dir = '09-03-2020-HPC-1D-sg-mapping-r0-ensemble-v3'
+    # data_dir = '09-03-2020-HPC-1D-sg-mapping-r0-ensemble-v3'
     data_dir = '02-03-2020-HPC-2D-phase-percolation'
-    field_ = fields[3]
+    data_dir = '05-03-2020-HPC-1D-sg-mapping-r0-ensemble-v2'
+    field_ = fields[1]
     plots = Plots(data_dir, field_)
-    # plots.plot_2d_distribution(results_name=data_dir, saveFig=[True, ''])
+    plots.plot_distribution(results_name=data_dir, saveFig=[True, ''])
+    sys.exit()
     ensemble_Av = plots.get_ensemble(results_name=data_dir, mode="mean")
     # plots.plot_rho_line(ensemble_Av, title='', saveFig=[True, '-R0'], save_sg_map=[False, ''])
     plots.plot_2d_average(ensemble_Av, saveFig=[True, ''], saveData=False)
