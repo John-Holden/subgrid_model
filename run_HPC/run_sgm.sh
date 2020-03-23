@@ -13,11 +13,11 @@ date_time=$(date '+%d-%m-%Y %H:%M:%S')
 
 #$ -cwd -V
 #$ -l h_rt=48:00:00
-#$ -t 1-10
+#$ -t 1-100
 
 mode="HPC"
-sim_type="-1D"
-sim_name="-R0-dist"
+sim_type="-2D"
+sim_name="-R0-phase"
 
 python3 mkdir.py $date_time $mode $sim_type $sim_name
 python3 sg_main.py $SGE_TASK_ID $date_time $data_type $mode $sim_type $sim_name

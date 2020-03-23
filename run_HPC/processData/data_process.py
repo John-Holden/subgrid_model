@@ -138,8 +138,10 @@ class Plots:
             fig, ax = plt.subplots(figsize=(12, 10))
             extent = [self.beta_Arr[0], self.beta_Arr[-1], self.disp_Arr[0], self.disp_Arr[-1]]
             data = ensemble_data[:, :, i] * self.set_plots["scale"]
-            data = np.where(data < 0.01, np.nan, data)
-            im = ax.imshow(data, origin='lower', extent=extent)
+            min_, max_ = data.min(), data.max()
+            data = np.where(data < 1, np.nan, data)
+            # data = np.where(data > 2, 1, 0)
+            im = ax.imshow(data, origin='lower', extent=extent, clim=[1, max_])
             ax.set_ylabel(r"Dispersal $\ell$ (m)", size=20)
             ax.set_xlabel(r"Infectivity $\beta$", size=20)
             ax.set_aspect("auto")
@@ -147,6 +149,7 @@ class Plots:
             ax.tick_params(axis='x', rotation=30, size=10)
             cbar = plt.colorbar(im)
             cbar.set_label(self.set_plots["ylabel"], size=30)
+
             ax.set_ylim(10, 30)
             plt.xticks(fontsize=20)
             plt.yticks(fontsize=20)
@@ -188,6 +191,7 @@ class Plots:
         for i in range(rho_shape):
             distribution_arr[:, i] = distribution_arr[:, i] / distribution_arr[:, i].sum()
         extent = [self.rho_Arr[0], self.rho_Arr[-1], 0, max_R0]
+
         fig, ax = plt.subplots()
         im = ax.imshow(np.where(distribution_arr < 0.01, np.nan, distribution_arr), origin="lower", cmap="jet",
                        aspect="auto", extent=extent, clim=[0, 0.50])
@@ -203,7 +207,7 @@ class Plots:
         plt.show()
 
         fig, ax = plt.subplots()
-        for i in [98, 148, 198, 248]:
+        for i in [0, 1, 2, 3]:
             ax.plot(distribution_arr[:, i], label=r'$\rho = {}$'.format(round(self.rho_Arr[i], 3)),
                      alpha=0.75)
             ax.scatter(range(max_R0), distribution_arr[:, i], s=10)
@@ -290,14 +294,16 @@ def combine_ens(ens_av1, ens_av2):
 if __name__ == '__main__':
     # Data fields saved
     fields = ['max_distance_km', 'mortality', 'mortality_ratio', 'percolation', 'run_time', 'velocity']
-    data_dir = '09-03-2020-HPC-1D-sg-mapping-r0-ensemble-v3'
+    # data_dir = '09-03-2020-HPC-1D-sg-mapping-r0-ensemble-v3'
     # data_dir = '02-03-2020-HPC-2D-phase-percolation'
     # data_dir = '05-03-2020-HPC-1D-sg-mapping-r0-ensemble-v2'
+    data_dir = '23-03-2020-HPC-2D-R0-phase'
+    # data_dir = '23-03-2020-HPC-1D-R0-dist'
     field_ = fields[1]
     plots = Plots(data_dir, field_)
     # plots.plot_distribution(results_name=data_dir, saveFig=[True, ''])
     ensemble_Av = plots.get_ensemble(results_name=data_dir, mode="mean")
-    plots.plot_rho_line(ensemble_Av, title='', saveFig=[True, '-R0'], save_sg_map=[False, ''])
-    # plots.plot_2d_average(ensemble_Av, saveFig=[True, ''], saveData=False)
+    # plots.plot_rho_line(ensemble_Av, title='', saveFig=[True, '-R0'], save_sg_map=[False, ''])
+    plots.plot_2d_average(ensemble_Av, saveFig=[True, ''], saveData=False)
 
 # End

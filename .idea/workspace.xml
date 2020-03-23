@@ -3,15 +3,132 @@
   <component name="ChangeListManager">
     <list default="true" id="5a973636-923c-48d9-aba3-9eae53a37057" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/run_HPC/processData/2D-distribution-.png" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/run_HPC/processData/2D-pspace-mortality-0.png" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/run_HPC/processData/2D-pspace-mortality-1.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/run_HPC/processData/2D-pspace-percolation-0.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/run_HPC/processData/2D-pspace-percolation-1.png" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/run_HPC/processData/data_process.py" beforeDir="false" afterPath="$PROJECT_DIR$/run_HPC/processData/data_process.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/run_HPC/processData/distribution-comparison-.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/run_HPC/processData/ens-R0.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/run_HPC/processData/ens-mortality-R0.png" beforeDir="false" afterPath="$PROJECT_DIR$/run_HPC/processData/ens-mortality-R0.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/processData/distribution-comparison-R0.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/processData/ens-mortality-R0.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh" beforeDir="false" afterPath="$PROJECT_DIR$/run_HPC/run_sgm.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.e2418116.1" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.e2418116.10" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.e2418116.11" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.e2418116.12" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.e2418116.13" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.e2418116.14" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.e2418116.15" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.e2418116.16" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.e2418116.17" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.e2418116.18" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.e2418116.19" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.e2418116.2" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.e2418116.20" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.e2418116.21" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.e2418116.22" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.e2418116.23" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.e2418116.24" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.e2418116.25" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.e2418116.26" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.e2418116.27" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.e2418116.28" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.e2418116.29" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.e2418116.3" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.e2418116.30" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.e2418116.31" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.e2418116.32" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.e2418116.33" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.e2418116.34" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.e2418116.35" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.e2418116.36" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.e2418116.37" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.e2418116.38" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.e2418116.39" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.e2418116.4" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.e2418116.40" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.e2418116.41" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.e2418116.42" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.e2418116.43" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.e2418116.44" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.e2418116.45" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.e2418116.46" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.e2418116.47" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.e2418116.48" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.e2418116.49" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.e2418116.5" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.e2418116.50" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.e2418116.6" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.e2418116.7" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.e2418116.8" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.e2418116.9" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.e2418119.1" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.e2418119.10" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.e2418119.2" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.e2418119.3" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.e2418119.4" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.e2418119.5" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.e2418119.6" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.e2418119.7" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.e2418119.8" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.e2418119.9" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.o2418116.1" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.o2418116.10" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.o2418116.11" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.o2418116.12" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.o2418116.13" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.o2418116.14" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.o2418116.15" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.o2418116.16" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.o2418116.17" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.o2418116.18" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.o2418116.19" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.o2418116.2" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.o2418116.20" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.o2418116.21" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.o2418116.22" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.o2418116.23" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.o2418116.24" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.o2418116.25" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.o2418116.26" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.o2418116.27" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.o2418116.28" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.o2418116.29" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.o2418116.3" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.o2418116.30" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.o2418116.31" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.o2418116.32" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.o2418116.33" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.o2418116.34" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.o2418116.35" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.o2418116.36" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.o2418116.37" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.o2418116.38" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.o2418116.39" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.o2418116.4" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.o2418116.40" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.o2418116.41" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.o2418116.42" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.o2418116.43" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.o2418116.44" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.o2418116.45" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.o2418116.46" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.o2418116.47" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.o2418116.48" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.o2418116.49" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.o2418116.5" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.o2418116.50" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.o2418116.6" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.o2418116.7" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.o2418116.8" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.o2418116.9" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.o2418119.1" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.o2418119.10" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.o2418119.2" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.o2418119.3" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.o2418119.4" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.o2418119.5" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.o2418119.6" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.o2418119.7" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.o2418119.8" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/run_HPC/run_sgm.sh.o2418119.9" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/run_HPC/sg_main.py" beforeDir="false" afterPath="$PROJECT_DIR$/run_HPC/sg_main.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -23,7 +140,7 @@
   <component name="CoverageDataManager">
     <SUITE FILE_PATH="coverage/dispersal_model$sgm_R0_v_perc.coverage" NAME="sgm_R0_v_perc Coverage Results" MODIFIED="1581605751593" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/model_test" />
     <SUITE FILE_PATH="coverage/subgrid_model$sgm_R0_mapping.coverage" NAME="sgm_R0_mapping Coverage Results" MODIFIED="1583172212966" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/run_local" />
-    <SUITE FILE_PATH="coverage/subgrid_model$data_process.coverage" NAME="data_process Coverage Results" MODIFIED="1584972863455" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/run_HPC/processData" />
+    <SUITE FILE_PATH="coverage/subgrid_model$data_process.coverage" NAME="data_process Coverage Results" MODIFIED="1584980347886" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/run_HPC/processData" />
     <SUITE FILE_PATH="coverage/dispersal_model$data_process.coverage" NAME="data_process Coverage Results" MODIFIED="1581605491900" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/run_HPC/processData" />
     <SUITE FILE_PATH="coverage/dispersal_model$sgm_R0_test.coverage" NAME="sgm_R0_test Coverage Results" MODIFIED="1581679310780" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/model_test" />
     <SUITE FILE_PATH="coverage/dispersal_model$data_process__1_.coverage" NAME="data_process Coverage Results" MODIFIED="1581074070380" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/run/processData" />
@@ -90,73 +207,78 @@
       <usages-collector id="statistics.lifecycle.project">
         <counts>
           <entry key="project.closed" value="29" />
-          <entry key="project.open.time.0" value="19" />
+          <entry key="project.open.time.0" value="20" />
           <entry key="project.open.time.2" value="1" />
           <entry key="project.open.time.4" value="3" />
           <entry key="project.open.time.5" value="2" />
           <entry key="project.open.time.6" value="2" />
           <entry key="project.open.time.7" value="2" />
-          <entry key="project.opened" value="29" />
+          <entry key="project.opened" value="30" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="Python Console" value="26" />
           <entry key="dummy" value="92" />
-          <entry key="py" value="18013" />
-          <entry key="sh" value="266" />
+          <entry key="py" value="18175" />
+          <entry key="sh" value="277" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="PLAIN_TEXT" value="358" />
-          <entry key="Python" value="18039" />
+          <entry key="PLAIN_TEXT" value="369" />
+          <entry key="Python" value="18201" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
           <entry key="gitignore" value="1" />
           <entry key="npy" value="2" />
-          <entry key="png" value="36" />
-          <entry key="py" value="112" />
-          <entry key="sh" value="10" />
+          <entry key="png" value="39" />
+          <entry key="py" value="113" />
+          <entry key="sh" value="11" />
           <entry key="txt" value="22" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="Image" value="36" />
-          <entry key="PLAIN_TEXT" value="39" />
-          <entry key="Python" value="108" />
+          <entry key="Image" value="39" />
+          <entry key="PLAIN_TEXT" value="40" />
+          <entry key="Python" value="109" />
         </counts>
       </usages-collector>
     </session>
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/run_HPC/processData/data_process.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-160">
-              <caret line="78" column="60" selection-start-line="78" selection-start-column="60" selection-end-line="78" selection-end-column="60" />
+            <state relative-caret-position="470">
+              <caret line="143" column="72" selection-start-line="143" selection-start-column="72" selection-end-line="143" selection-end-column="72" />
               <folding>
-                <element signature="e#4392#5917#0" />
-                <element signature="e#4745#5917#0" />
-                <element signature="e#5992#7286#0" />
-                <element signature="e#7355#10237#0" />
-                <element signature="e#11698#13259#0" />
-                <marker date="1584972863443" expanded="true" signature="7423:7432" ph="..." />
-                <marker date="1584972863443" expanded="true" signature="10320:10325" ph="..." />
+                <element signature="e#7432#10319#0" />
+                <marker date="1584980347875" expanded="true" signature="7531:7540" ph="..." />
+                <marker date="1584980347875" expanded="true" signature="10422:10427" ph="..." />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/run_HPC/run_sgm.sh">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="225">
+              <caret line="15" column="11" selection-start-line="15" selection-start-column="11" selection-end-line="15" selection-end-column="11" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/run_HPC/sg_main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="494">
-              <caret line="55" column="4" lean-forward="true" selection-start-line="55" selection-start-column="4" selection-end-line="55" selection-end-column="4" />
+            <state relative-caret-position="657">
+              <caret line="66" column="11" selection-start-line="66" selection-start-column="11" selection-end-line="66" selection-end-column="11" />
             </state>
           </provider>
         </entry>
@@ -240,9 +362,9 @@
         <option value="$PROJECT_DIR$/run_local/sgm_test/sg_model_test.py" />
         <option value="$PROJECT_DIR$/run_local/distribution_generator.py" />
         <option value="$PROJECT_DIR$/run_local/animationsData_test/plot_frames.py" />
+        <option value="$PROJECT_DIR$/run_HPC/processData/data_process.py" />
         <option value="$PROJECT_DIR$/run_HPC/run_sgm.sh" />
         <option value="$PROJECT_DIR$/run_HPC/sg_main.py" />
-        <option value="$PROJECT_DIR$/run_HPC/processData/data_process.py" />
       </list>
     </option>
   </component>
@@ -261,7 +383,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -274,27 +395,11 @@
               <item name="subgrid_model" type="462c0819:PsiDirectoryNode" />
               <item name="run_HPC" type="462c0819:PsiDirectoryNode" />
             </path>
-            <path>
-              <item name="subgrid_model" type="b2602c69:ProjectViewProjectNode" />
-              <item name="subgrid_model" type="462c0819:PsiDirectoryNode" />
-              <item name="run_HPC" type="462c0819:PsiDirectoryNode" />
-              <item name="processData" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="subgrid_model" type="b2602c69:ProjectViewProjectNode" />
-              <item name="subgrid_model" type="462c0819:PsiDirectoryNode" />
-              <item name="run_HPC" type="462c0819:PsiDirectoryNode" />
-              <item name="sg_model" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="subgrid_model" type="b2602c69:ProjectViewProjectNode" />
-              <item name="subgrid_model" type="462c0819:PsiDirectoryNode" />
-              <item name="run_local" type="462c0819:PsiDirectoryNode" />
-            </path>
           </expand>
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -474,13 +579,14 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1920" height="1080" extended-state="0" />
+    <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.31576145" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.31895635" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32673267" />
-      <window_info anchor="bottom" x="-1649" y="176" width="678" height="958" id="Run" order="2" type="FLOATING" weight="0.32953367" />
+      <window_info anchor="bottom" x="-1649" y="176" width="678" height="958" id="Run" order="2" type="FLOATING" visible="true" weight="0.32953367" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -676,13 +782,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/run_HPC/run_sgm.sh">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="225">
-          <caret line="15" column="10" selection-start-line="15" selection-start-column="10" selection-end-line="15" selection-end-column="10" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/run_local/sgm_R0_mapping.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1335">
@@ -690,24 +789,11 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/run_HPC/processData/2D-distribution-.png">
-      <provider selected="true" editor-type-id="images" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/run_HPC/processData/2D-pspace-mortality-0.png">
-      <provider selected="true" editor-type-id="images" />
-    </entry>
     <entry file="file://$PROJECT_DIR$/run_HPC/processData/2D-pspace-mortality-1.png">
       <provider selected="true" editor-type-id="images" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/run_HPC/processData/2D-pspace-percolation-0.png">
-      <provider selected="true" editor-type-id="images" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/run_HPC/processData/distribution-comparison-.png">
-      <provider selected="true" editor-type-id="images" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/run_HPC/processData/ens-R0.png">
-      <provider selected="true" editor-type-id="images" />
-    </entry>
+    <entry file="file://$PROJECT_DIR$/run_HPC/processData/2D-pspace-percolation-0.png" />
+    <entry file="file://$PROJECT_DIR$/run_HPC/processData/ens-R0.png" />
     <entry file="file://$PROJECT_DIR$/run_HPC/processData/ens-mortality-R0.png">
       <provider selected="true" editor-type-id="images" />
     </entry>
@@ -721,26 +807,38 @@
     <entry file="file://$PROJECT_DIR$/run_HPC/processData/distribution-comparison-R0.png">
       <provider selected="true" editor-type-id="images" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/run_HPC/sg_main.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="494">
-          <caret line="55" column="4" lean-forward="true" selection-start-line="55" selection-start-column="4" selection-end-line="55" selection-end-column="4" />
-        </state>
-      </provider>
+    <entry file="file://$PROJECT_DIR$/run_HPC/processData/2D-distribution-.png">
+      <provider selected="true" editor-type-id="images" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/run_HPC/processData/2D-pspace-mortality-0.png">
+      <provider selected="true" editor-type-id="images" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/run_HPC/processData/r0-dist.png">
+      <provider selected="true" editor-type-id="images" />
     </entry>
     <entry file="file://$PROJECT_DIR$/run_HPC/processData/data_process.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-160">
-          <caret line="78" column="60" selection-start-line="78" selection-start-column="60" selection-end-line="78" selection-end-column="60" />
+        <state relative-caret-position="470">
+          <caret line="143" column="72" selection-start-line="143" selection-start-column="72" selection-end-line="143" selection-end-column="72" />
           <folding>
-            <element signature="e#4392#5917#0" />
-            <element signature="e#4745#5917#0" />
-            <element signature="e#5992#7286#0" />
-            <element signature="e#7355#10237#0" />
-            <element signature="e#11698#13259#0" />
-            <marker date="1584972863443" expanded="true" signature="7423:7432" ph="..." />
-            <marker date="1584972863443" expanded="true" signature="10320:10325" ph="..." />
+            <element signature="e#7432#10319#0" />
+            <marker date="1584980347875" expanded="true" signature="7531:7540" ph="..." />
+            <marker date="1584980347875" expanded="true" signature="10422:10427" ph="..." />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/run_HPC/run_sgm.sh">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="225">
+          <caret line="15" column="11" selection-start-line="15" selection-start-column="11" selection-end-line="15" selection-end-column="11" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/run_HPC/sg_main.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="657">
+          <caret line="66" column="11" selection-start-line="66" selection-start-column="11" selection-end-line="66" selection-end-column="11" />
         </state>
       </provider>
     </entry>
