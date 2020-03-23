@@ -53,9 +53,10 @@ if 1:  # Sub-grid mapping format
     rho_Arr_med = np.linspace(0.051, 0.10, 10)
     rho_Arr_low = np.linspace(0.001, 0.050, 50)  # Tree density range stack at different resolutions
     rho_Arr = np.hstack([rho_Arr_low, rho_Arr_med])
-    beta_Arr = np.array([0.005])  # Infectivity constant (or rate) \approx \in [0.005, 0.020]
+    rho_Arr = np.array([0.01,0.02, 0.03, 0.04])
+    beta_Arr = np.array([0.025])  # Infectivity constant (or rate) \approx \in [0.005, 0.020]
     eff_sigma_Arr = np.array([25]) / alpha  # Dispersal distance in comp units (not physical)
-if 1:  # Phase-plane format
+if 0:  # Phase-plane format
     # RUN Full parameter space
     mode = "Phase plane 2D"
     rho_Arr = np.array([0.01])
@@ -63,7 +64,7 @@ if 1:  # Phase-plane format
     eff_sigma_Arr = np.linspace(10, 40, len(beta_Arr)) / alpha
 
 settings["R0_mode"] = True
-repeats = 20  # ensemble size = repeats * # HCP_cores
+repeats = 1000  # ensemble size = repeats * # HCP_cores
 dim_ = np.array([repeats, eff_sigma_Arr.shape[0], beta_Arr.shape[0], rho_Arr.shape[0]])  # parameter space dimension
 # DEFINE data structures to save results
 mortality = np.zeros(shape=dim_)
