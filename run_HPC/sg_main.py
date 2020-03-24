@@ -59,8 +59,8 @@ if 0:  # Sub-grid mapping format
 if 1:  # Phase-plane format
     # RUN Full parameter space
     mode = "Phase plane 2D"
-    rho_Arr = np.array([0.015])
-    beta_Arr = np.linspace(0.005, 0.030, 75)
+    rho_Arr = np.array([0.01])
+    beta_Arr = np.linspace(0.0, 0.020, 75)
     eff_sigma_Arr = np.linspace(10, 40, len(beta_Arr)) / alpha
 
 settings["R0_mode"] = True

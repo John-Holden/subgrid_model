@@ -21,12 +21,12 @@ Beta values : [ 0.          0.00027027  0.00054054  0.00081081  0.00108108  0.00
   0.01945946  0.01972973  0.02      ] (m), # = 75
 Dispersal values : 10.0 -- 40.0(m), # = 75
 Density values : 0.01 -- 0.01, # = 1
-# HPC core repeats : 1
+# HPC core repeats : 10
 
 ______Simulation Settings_______
 out_path:/nobackup/py13jh/subgrid_model/run_HPC/processData/23-03-2020-HPC-2D-R0-phase
 date:23-03-2020
-job_id:28
+job_id:44
 plt_tseries:False
 save_figs:False
 dyn_plots:[False, None, False]
@@ -37,4 +37,4 @@ verbose:False
 HPC:HPC
 debug_time:True
 R0_mode:True
-repeats:1
+repeats:10
